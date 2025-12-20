@@ -5,7 +5,7 @@ Para finalizar a configuração, siga estes passos:
 ## 1. Banco de Dados (Migration)
 O arquivo `migration_017.sql` foi criado na raiz do projeto.
 1. Vá para o [Supabase Dashboard](https://supabase.com/dashboard).
-2. Abra seu projeto e vá em **SQL Editor**.
+2. Abra seu projeto e váa em **SQL Editor**.
 3. Copie o conteúdo do arquivo `migration_017.sql` e execute.
 
 ## 2. Variáveis de Ambiente
