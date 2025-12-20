@@ -4,7 +4,7 @@ Você encontrou o erro `infinite recursion detected in policy for relation "user
 
 Para corrigir e liberar o login, siga os passos abaixo:
 
-## 1. Copie o Código SQLL
+## 1. Copie o Código SQLLL
 
 Copie todo o conteúdo do código abaixo:
 
