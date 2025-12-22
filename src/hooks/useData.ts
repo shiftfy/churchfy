@@ -296,6 +296,7 @@ export function useOrganization() {
             address?: string;
             website?: string;
             logo_url?: string;
+            church_metadata?: any;
         }) => {
             if (!orgId) throw new Error('No organization ID');
 

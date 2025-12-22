@@ -46,6 +46,7 @@ export interface Organization {
     plan_id?: 'one' | 'campus' | 'custom';
     subscription_status?: 'trialing' | 'active' | 'past_due' | 'canceled' | 'incomplete' | 'unpaid';
     trial_ends_at?: string;
+    church_metadata?: Record<string, any>; // Stores unstructured data for AI
     created_at: string;
     updated_at: string;
 }

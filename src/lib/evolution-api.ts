@@ -34,6 +34,7 @@ export const EvolutionApi = {
                 throw new Error(data.error || `Error ${response.status}: ${response.statusText}`);
             }
 
+
             return data;
         } catch (error) {
             console.error('Evolution API Create Error:', error);

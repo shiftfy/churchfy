@@ -173,6 +173,72 @@ function SettingsPageSkeleton() {
     );
 }
 
+// WhatsApp Settings Skeleton
+function WhatsAppSettingsSkeleton() {
+    return (
+        <div className="space-y-8 animate-in fade-in duration-300">
+            {/* Header */}
+            <div className="space-y-2">
+                <Skeleton className="h-9 w-64" />
+                <Skeleton className="h-4 w-96 max-w-full" />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Left Column: Tabs & Main Content */}
+                <div className="lg:col-span-2 space-y-6">
+                    {/* Tabs Header */}
+                    <div className="flex gap-1 bg-muted p-1 rounded-lg w-full">
+                        <Skeleton className="h-9 flex-1 rounded-md" />
+                        <Skeleton className="h-9 flex-1 rounded-md" />
+                    </div>
+
+                    {/* Main Card Content */}
+                    <div className="rounded-lg border bg-card p-6 space-y-8">
+                        {/* Summary Section */}
+                        <div className="grid gap-4 md:grid-cols-3">
+                            <Skeleton className="h-32 rounded-lg" />
+                            <Skeleton className="h-32 rounded-lg" />
+                            <Skeleton className="h-32 rounded-lg" />
+                        </div>
+
+                        {/* Tip Section */}
+                        <Skeleton className="h-16 w-full rounded-lg" />
+
+                        {/* Form-like area (optional, if integration tab) */}
+                        <div className="space-y-4 pt-4 border-t">
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-32" />
+                                <Skeleton className="h-10 w-full" />
+                            </div>
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-32" />
+                                <Skeleton className="h-10 w-full" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Right Column: Connection Card */}
+                <div className="lg:col-span-1">
+                    <div className="rounded-lg border bg-card overflow-hidden">
+                        <div className="bg-muted/50 p-4 border-b">
+                            <div className="flex justify-between items-center">
+                                <Skeleton className="h-5 w-32" />
+                                <Skeleton className="h-6 w-20 rounded-full" />
+                            </div>
+                        </div>
+                        <div className="p-6 flex flex-col items-center space-y-6">
+                            <Skeleton className="h-48 w-48 rounded-xl" />
+                            <Skeleton className="h-10 w-full rounded-md" />
+                            <Skeleton className="h-4 w-full" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export {
     Skeleton,
     MetricCardSkeleton,
@@ -183,4 +249,5 @@ export {
     KanbanColumnSkeleton,
     FormFieldSkeleton,
     SettingsPageSkeleton,
+    WhatsAppSettingsSkeleton,
 };

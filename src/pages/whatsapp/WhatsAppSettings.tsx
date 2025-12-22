@@ -33,6 +33,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { WhatsAppSettingsSkeleton } from "@/components/ui/skeleton";
 
 const whatsappSchema = z.object({
     openai_api_key: z.string().optional(),
@@ -359,7 +360,7 @@ export function WhatsAppSettings() {
     };
 
     if (loading) {
-        return <div className="p-8">Carregando configurações...</div>; // TODO: Better skeleton
+        return <WhatsAppSettingsSkeleton />;
     }
 
     return (
