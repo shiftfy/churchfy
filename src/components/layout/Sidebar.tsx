@@ -6,7 +6,6 @@ import {
     MessageSquare,
     Building2,
     Settings,
-    LogOut,
     FileText,
     HelpCircle,
     User as UserIcon,
@@ -19,7 +18,7 @@ import { differenceInDays, parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { CancelSubscriptionDialog } from "@/components/subscription/CancelSubscriptionDialog";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/hooks/useAuth";
+
 import { usePrefetch } from "@/hooks/useData";
 import { useSubscription } from "@/hooks/useSubscription";
 
@@ -47,7 +46,6 @@ const secondaryItems: NavItem[] = [
 
 export function Sidebar() {
     const location = useLocation();
-    const { user, signOut } = useAuth();
     const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
     const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
     const { prefetchDashboard, prefetchBranches, prefetchPeople } = usePrefetch();
@@ -65,9 +63,7 @@ export function Sidebar() {
         return { daysLeft, progress };
     }, [subscriptionStatus, trialEndsAt]);
 
-    const handleLogout = async () => {
-        await signOut();
-    };
+
 
     const toggleMenu = (title: string) => {
         setOpenMenus(prev => ({
@@ -94,17 +90,10 @@ export function Sidebar() {
     }, [prefetchDashboard, prefetchBranches, prefetchPeople]);
 
     return (
-        <aside className="fixed left-0 top-0 h-screen w-64 bg-background border-r border-[#efefef] flex flex-col z-40 shadow-[inset_-12px_0_30px_-15px_rgba(0,0,0,0.08)]">
+        <aside className="fixed left-[60px] top-0 h-screen w-64 bg-background border-r border-[#efefef] flex flex-col z-40 shadow-[inset_-12px_0_30px_-15px_rgba(0,0,0,0.08)] py-6">
 
-            {/* Header */}
-            <div className="h-16 flex items-center px-6">
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                        <span className="text-primary-foreground font-bold text-sm">C</span>
-                    </div>
-                    <span className="font-bold text-lg tracking-tight">Churchfy</span>
-                </div>
-            </div>
+            {/* Header removed as requested - Churchfy logo is now in HubSidebar */}
+
 
             {/* Premium Minha Igreja Button */}
             <div className="px-4 mb-2">
@@ -316,7 +305,7 @@ export function Sidebar() {
             />
 
             {/* Help Section */}
-            <div className="px-4 pb-4">
+            <div className="px-4">
                 <Link
                     to="/ajuda"
                     className={cn(
@@ -331,31 +320,7 @@ export function Sidebar() {
                 </Link>
             </div>
 
-            {/* User Profile */}
-            <div className="p-4">
-                <div className="flex items-center justify-between gap-2">
-                    <Link to="/perfil" className="flex items-center gap-3 px-2 py-1.5 hover:bg-secondary/50 rounded-md transition-colors cursor-pointer flex-1 min-w-0">
-                        <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center overflow-hidden shrink-0">
-                            {user?.avatar_url ? (
-                                <img src={user.avatar_url} alt="User" className="w-full h-full object-cover" />
-                            ) : (
-                                <UserIcon className="w-4 h-4 text-muted-foreground" />
-                            )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium truncate">{user?.full_name || 'Usuário'}</p>
-                            <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
-                        </div>
-                    </Link>
-                    <button
-                        onClick={handleLogout}
-                        className="p-2 rounded-md hover:bg-destructive/10 hover:text-destructive transition-colors shrink-0"
-                        title="Sair"
-                    >
-                        <LogOut className="w-4 h-4" />
-                    </button>
-                </div>
-            </div>
+
         </aside>
     );
 }
