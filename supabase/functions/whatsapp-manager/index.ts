@@ -209,12 +209,44 @@ serve(async (req) => {
             // Normalize the response to return a consistent format
             // v2 returns: { instance: { instanceName, state } } or { state: "open" }
             const state = connectionData?.instance?.state || connectionData?.state || 'close'
+            let number = null
+
+            // If connected, try to get more details like the number
+            if (state === 'open' || state === 'connected') {
+                try {
+                    const detailResponse = await fetch(`${EVOLUTION_API_URL}/instance/fetch/${instanceName}`, {
+                        method: 'GET',
+                        headers: getHeaders(),
+                    })
+                    const detailData = await detailResponse.json()
+
+                    console.log('=== Instance Detail Response ===')
+                    console.log('Full response:', JSON.stringify(detailData, null, 2))
+                    console.log('detailData.instance:', detailData?.instance)
+                    console.log('detailData.instance.owner:', detailData?.instance?.owner)
+                    console.log('detailData.instance.number:', detailData?.instance?.number)
+                    console.log('detailData.number:', detailData?.number)
+                    console.log('detailData.instance.instanceName:', detailData?.instance?.instanceName)
+
+                    // Try multiple possible locations for the number
+                    number = detailData?.instance?.owner ||
+                        detailData?.instance?.number ||
+                        detailData?.number ||
+                        detailData?.instance?.profilePictureUrl?.split('@')[0] || // Sometimes embedded in profile URL
+                        null
+
+                    console.log('Extracted number:', number)
+                } catch (e) {
+                    console.error('Error fetching instance details:', e)
+                }
+            }
 
             return new Response(JSON.stringify({
                 instance: {
                     instanceName,
                     status: state, // 'open', 'close', 'connecting'
-                    state: state
+                    state: state,
+                    number: number
                 }
             }), {
                 headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -5,6 +5,8 @@ import {
     DialogTitle,
     DialogFooter,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -38,17 +40,27 @@ import type { FormField } from "@/types/form";
 import { supabase, type Journey } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { PersonTags } from "./PersonTags";
+
+interface FieldDefinition {
+    id: string;
+    label: string;
+    type: 'text' | 'date' | 'select' | 'checkbox';
+    options?: string[];
+}
 
 interface Person {
     id: string;
     name: string;
     phone: string | null;
     email: string | null;
+    address: string | null;
     birthdate: string | null;
     stage_id: string | null;
     journey_id: string | null;
     created_at: string;
     is_archived?: boolean;
+    custom_fields?: Record<string, any>;
     visitor_responses?: {
         created_at: string;
         responses: Record<string, any>;
@@ -74,19 +86,54 @@ export function PersonDetailsDialog({ person, open, onOpenChange, onDelete, onAr
     const [journeys, setJourneys] = useState<Journey[]>([]);
     const [selectedJourneyId, setSelectedJourneyId] = useState<string | null>(null);
     const [isUpdatingJourney, setIsUpdatingJourney] = useState(false);
+    const [fieldDefinitions, setFieldDefinitions] = useState<FieldDefinition[]>([]);
+    const [personCustomFields, setPersonCustomFields] = useState<Record<string, any>>({});
+
+
+
     const { user } = useAuth();
 
     useEffect(() => {
         if (open && user?.organization_id) {
             fetchJourneys();
+            fetchFieldDefinitions();
         }
     }, [open, user]);
 
     useEffect(() => {
         if (person) {
             setSelectedJourneyId(person.journey_id);
+            setPersonCustomFields(person.custom_fields || {});
         }
     }, [person]);
+
+
+
+    const fetchFieldDefinitions = async () => {
+        if (!user?.organization_id) {
+            console.log("No organization ID found");
+            return;
+        }
+
+        console.log("Fetching definitions for org:", user.organization_id);
+        try {
+            const { data, error } = await supabase
+                .from("person_field_definitions")
+                .select("*")
+                .eq("organization_id", user.organization_id);
+
+            if (error) {
+                console.error("Error fetching definitions query:", error);
+                throw error;
+            }
+            console.log("Fetched definitions:", data);
+            setFieldDefinitions(data || []);
+        } catch (error) {
+            console.error("Error fetching definitions:", error);
+        }
+    };
+
+
 
     const fetchJourneys = async () => {
         try {
@@ -139,12 +186,39 @@ export function PersonDetailsDialog({ person, open, onOpenChange, onDelete, onAr
                 onJourneyChange();
             }
 
-            toast.success("Jornada atualizada com sucesso!");
+            toast.success("Fluxo atualizado com sucesso!");
         } catch (error) {
             console.error("Error updating journey:", error);
-            toast.error("Erro ao atualizar jornada");
+            toast.error("Erro ao atualizar fluxo");
         } finally {
             setIsUpdatingJourney(false);
+        }
+    };
+
+    const handleUpdateField = async (key: string, value: any) => {
+        if (!person) return;
+
+        const newCustomFields = {
+            ...personCustomFields,
+            [key]: value
+        };
+
+        // Optimistic update
+        setPersonCustomFields(newCustomFields);
+
+        try {
+            const { error } = await supabase
+                .from("people")
+                .update({
+                    custom_fields: newCustomFields,
+                    updated_at: new Date().toISOString()
+                })
+                .eq("id", person.id);
+
+            if (error) throw error;
+        } catch (error) {
+            console.error("Error updating field:", error);
+            toast.error("Erro ao atualizar campo.");
         }
     };
 
@@ -167,9 +241,38 @@ export function PersonDetailsDialog({ person, open, onOpenChange, onDelete, onAr
     // Find current journey title for display
     const currentJourneyTitle = journeys.find(j => j.id === selectedJourneyId)?.title || journeyTitle;
 
+    // Use address from person record, or fallback to latest response extraction
+    const addressValue = person.address || (form?.fields.find(f => f.type === 'address') ? responses[form.fields.find(f => f.type === 'address')!.id] : null);
+
+    // Extract all Prayer Requests
+    const getAllPrayerRequests = () => {
+        if (!person.visitor_responses) return [];
+        const requests: { date: string; request: string; formTitle: string }[] = [];
+
+        person.visitor_responses.forEach(resp => {
+            if (!resp.forms) return;
+            resp.forms?.fields.forEach(field => {
+                if (field.type === 'prayer_request') {
+                    const value = resp.responses[field.id];
+                    if (value) {
+                        requests.push({
+                            date: resp.created_at,
+                            request: value,
+                            formTitle: resp.forms?.title || "Sem título"
+                        });
+                    }
+                }
+            });
+        });
+
+        return requests.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    };
+
+    const prayerRequests = getAllPrayerRequests();
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+            <DialogContent className="sm:max-w-[700px] max-h-[85vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle className="flex items-center justify-between">
                         <span>Informações de {firstName}</span>
@@ -181,11 +284,21 @@ export function PersonDetailsDialog({ person, open, onOpenChange, onDelete, onAr
                     </DialogTitle>
                 </DialogHeader>
 
+                <div className="px-6 pb-2">
+                    {user?.organization_id && (
+                        <PersonTags
+                            personId={person.id}
+                            organizationId={user.organization_id}
+                        />
+                    )}
+                </div>
+
                 <Tabs defaultValue="details" className="w-full">
-                    <TabsList className="grid w-full grid-cols-3">
+                    <TabsList className="grid w-full grid-cols-4">
                         <TabsTrigger value="details">Dados Pessoais</TabsTrigger>
                         <TabsTrigger value="responses">Respostas</TabsTrigger>
-                        <TabsTrigger value="journey">Jornada</TabsTrigger>
+                        <TabsTrigger value="prayer_requests">Orações</TabsTrigger>
+                        <TabsTrigger value="journey">Fluxo</TabsTrigger>
                     </TabsList>
 
                     <div className="py-4">
@@ -206,10 +319,108 @@ export function PersonDetailsDialog({ person, open, onOpenChange, onDelete, onAr
                                         </div>
                                     </div>
                                     <div className="grid gap-2">
+                                        <Label>Email</Label>
+                                        <div className="p-3 bg-muted rounded-md text-sm">
+                                            {person.email || "-"}
+                                        </div>
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label>Data de Nascimento</Label>
+                                        <div className="p-3 bg-muted rounded-md text-sm">
+                                            {person.birthdate ? format(new Date(person.birthdate), "dd/MM/yyyy", { locale: ptBR }) : "-"}
+                                        </div>
+                                    </div>
+                                    <div className="grid gap-2">
                                         <Label>Data de Cadastro</Label>
                                         <div className="p-3 bg-muted rounded-md text-sm">
                                             {format(new Date(person.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
                                         </div>
+                                    </div>
+                                </div>
+
+                                {addressValue && (
+                                    <div className="grid gap-2">
+                                        <Label>Endereço</Label>
+                                        <div className="p-3 bg-muted rounded-md text-sm whitespace-pre-wrap">
+                                            {addressValue}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Custom Fields Section */}
+                                <div className="pt-4 border-t">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <Label className="text-base font-semibold">Informações Adicionais</Label>
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        {fieldDefinitions.length > 0 ? (
+                                            fieldDefinitions.map((def) => {
+                                                // Find value by ID first, then Label (for legacy support)
+                                                let value = personCustomFields[def.id];
+                                                if (value === undefined && personCustomFields[def.label] !== undefined) {
+                                                    value = personCustomFields[def.label];
+                                                }
+
+                                                const isDate = def.type === 'date';
+                                                const isCheckbox = def.type === 'checkbox';
+                                                const isSelect = def.type === 'select';
+
+                                                return (
+                                                    <div key={def.id} className="grid gap-2">
+                                                        <Label className="text-xs text-muted-foreground uppercase">{def.label}</Label>
+
+                                                        {isCheckbox ? (
+                                                            <div className="flex items-center h-[40px] px-1">
+                                                                <div className="flex items-center space-x-2">
+                                                                    <Switch
+                                                                        checked={!!value}
+                                                                        onCheckedChange={(checked) => handleUpdateField(def.id, checked)}
+                                                                    />
+                                                                    <span className="text-sm text-foreground">
+                                                                        {value ? "Sim" : "Não"}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        ) : isSelect && def.options ? (
+                                                            <Select
+                                                                value={value?.toString() || ""}
+                                                                onValueChange={(val) => handleUpdateField(def.id, val)}
+                                                            >
+                                                                <SelectTrigger>
+                                                                    <SelectValue placeholder="Selecione..." />
+                                                                </SelectTrigger>
+                                                                <SelectContent>
+                                                                    {def.options.map((opt) => (
+                                                                        <SelectItem key={opt} value={opt}>
+                                                                            {opt}
+                                                                        </SelectItem>
+                                                                    ))}
+                                                                </SelectContent>
+                                                            </Select>
+                                                        ) : (
+                                                            <Input
+                                                                type={isDate ? "date" : "text"}
+                                                                value={value || ""}
+                                                                onChange={(e) => {
+                                                                    const newVal = e.target.value;
+                                                                    // Update local state immediately
+                                                                    setPersonCustomFields(prev => ({ ...prev, [def.id]: newVal }));
+                                                                }}
+                                                                onBlur={(e) => {
+                                                                    handleUpdateField(def.id, e.target.value);
+                                                                }}
+                                                                className="bg-muted/50 focus:bg-background"
+                                                                placeholder={isDate ? "" : "Digite aqui..."}
+                                                            />
+                                                        )}
+                                                    </div>
+                                                );
+                                            })
+                                        ) : (
+                                            <div className="col-span-full text-center py-4 text-sm text-muted-foreground border-2 border-dashed rounded-lg">
+                                                Nenhum campo personalizado configurado.
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -226,7 +437,10 @@ export function PersonDetailsDialog({ person, open, onOpenChange, onDelete, onAr
                                         {form.fields
                                             .filter((field) => {
                                                 const label = field.label.toLowerCase();
-                                                return !label.includes('nome completo') && !label.includes('whatsapp');
+                                                return !label.includes('nome completo') &&
+                                                    !label.includes('whatsapp') &&
+                                                    field.type !== 'address' && // Already shown in details
+                                                    field.type !== 'prayer_request'; // Shown in own tab
                                             })
                                             .map((field) => {
                                                 const value = responses[field.id];
@@ -241,7 +455,7 @@ export function PersonDetailsDialog({ person, open, onOpenChange, onDelete, onAr
                                                 return (
                                                     <div key={field.id} className="grid gap-2">
                                                         <Label className="text-muted-foreground">{field.label}</Label>
-                                                        <div className="p-3 bg-secondary/30 rounded-md text-sm">
+                                                        <div className="p-3 bg-secondary/30 rounded-md text-sm whitespace-pre-wrap">
                                                             {displayValue}
                                                         </div>
                                                     </div>
@@ -256,21 +470,44 @@ export function PersonDetailsDialog({ person, open, onOpenChange, onDelete, onAr
                             )}
                         </TabsContent>
 
-                        {/* Tab 3: Jornada */}
+                        {/* Tab 3: Pedidos de Oração */}
+                        <TabsContent value="prayer_requests" className="space-y-4 mt-0">
+                            {prayerRequests.length > 0 ? (
+                                <div className="space-y-4">
+                                    {prayerRequests.map((req, idx) => (
+                                        <div key={idx} className="border rounded-lg p-4 bg-card space-y-2">
+                                            <div className="flex justify-between items-center text-xs text-muted-foreground">
+                                                <span>{format(new Date(req.date), "dd/MM/yyyy HH:mm", { locale: ptBR })}</span>
+                                                <span className="bg-muted px-2 py-0.5 rounded text-[10px]">{req.formTitle}</span>
+                                            </div>
+                                            <p className="text-sm whitespace-pre-wrap leading-relaxed">
+                                                {req.request}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center text-muted-foreground py-8 border-2 border-dashed rounded-lg">
+                                    Nenhum pedido de oração encontrado.
+                                </div>
+                            )}
+                        </TabsContent>
+
+                        {/* Tab 4: Fluxo */}
                         <TabsContent value="journey" className="space-y-4 mt-0">
                             <div className="space-y-4">
                                 <div className="grid gap-2">
-                                    <Label>Jornada Atual</Label>
+                                    <Label>Fluxo Atual</Label>
                                     <Select
                                         value={selectedJourneyId || "none"}
                                         onValueChange={handleJourneyChange}
                                         disabled={isUpdatingJourney}
                                     >
                                         <SelectTrigger>
-                                            <SelectValue placeholder="Selecione uma jornada" />
+                                            <SelectValue placeholder="Selecione um fluxo" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="none" disabled>Sem Jornada</SelectItem>
+                                            <SelectItem value="none" disabled>Sem Fluxo</SelectItem>
                                             {journeys.map((journey) => (
                                                 <SelectItem key={journey.id} value={journey.id}>
                                                     {journey.title}
@@ -279,7 +516,7 @@ export function PersonDetailsDialog({ person, open, onOpenChange, onDelete, onAr
                                         </SelectContent>
                                     </Select>
                                     <p className="text-xs text-muted-foreground">
-                                        Ao mudar a jornada, a pessoa será movida para o primeiro estágio da nova jornada.
+                                        Ao mudar o fluxo, a pessoa será movida para o primeiro estágio do novo fluxo.
                                     </p>
                                 </div>
                             </div>
@@ -315,7 +552,7 @@ export function PersonDetailsDialog({ person, open, onOpenChange, onDelete, onAr
                         )}
                     </Button>
                 </DialogFooter>
-            </DialogContent>
+            </DialogContent >
 
             <AlertDialog open={isDeleting} onOpenChange={setIsDeleting}>
                 <AlertDialogContent>

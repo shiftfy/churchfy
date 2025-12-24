@@ -332,7 +332,7 @@ export function PublicForm() {
                                     {field.label} {field.required && <span style={{ color: settings.button_color }}>*</span>}
                                 </Label>
 
-                                {field.type === "textarea" ? (
+                                {field.type === "textarea" || field.type === "address" || field.type === "prayer_request" ? (
                                     <Textarea
                                         id={field.id}
                                         value={formData[field.id] || ""}

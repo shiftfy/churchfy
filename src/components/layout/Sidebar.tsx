@@ -12,7 +12,8 @@ import {
     User as UserIcon,
     ChevronDown,
     ChevronRight,
-    Clock
+    Clock,
+    GitMerge
 } from "lucide-react";
 import { differenceInDays, parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -33,21 +34,14 @@ interface NavItem {
 const navItems: NavItem[] = [
     { title: "Dashboard", href: "/dashboard", icon: Home, prefetchKey: 'dashboard' },
     { title: "Formulários", href: "/formularios", icon: FileText },
-    {
-        title: "Pessoas",
-        href: "/visitantes/todos",
-        icon: Users,
-        prefetchKey: 'people',
-        subItems: [
-            { title: "Jornada", href: "/visitantes/fluxo", prefetchKey: 'people' },
-            { title: "Todas as pessoas", href: "/visitantes/todos", prefetchKey: 'people' }
-        ]
-    },
-    { title: "WhatsApp", href: "/whatsapp", icon: MessageSquare },
+    { title: "Pessoas", href: "/visitantes/todos", icon: Users, prefetchKey: 'people' },
+    { title: "Fluxo", href: "/visitantes/fluxo", icon: GitMerge, prefetchKey: 'people' },
+    { title: "Discipuladores", href: "/discipuladores", icon: UserIcon },
 ];
 
 const secondaryItems: NavItem[] = [
-    { title: "Minha Igreja", href: "/configuracoes", icon: Settings },
+    { title: "WhatsApp", href: "/whatsapp", icon: MessageSquare },
+    { title: "Inputs e Tags", href: "/configuracoes/tags-campos", icon: Settings },
     { title: "Filiais", href: "/filiais", icon: Building2, prefetchKey: 'branches' },
 ];
 
@@ -100,9 +94,10 @@ export function Sidebar() {
     }, [prefetchDashboard, prefetchBranches, prefetchPeople]);
 
     return (
-        <aside className="fixed left-0 top-0 h-screen w-64 bg-background border-r border-border flex flex-col z-40">
+        <aside className="fixed left-0 top-0 h-screen w-64 bg-background border-r border-[#efefef] flex flex-col z-40 shadow-[inset_-12px_0_30px_-15px_rgba(0,0,0,0.08)]">
+
             {/* Header */}
-            <div className="h-16 flex items-center px-6 border-b border-border/50">
+            <div className="h-16 flex items-center px-6">
                 <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
                         <span className="text-primary-foreground font-bold text-sm">C</span>
@@ -111,9 +106,53 @@ export function Sidebar() {
                 </div>
             </div>
 
+            {/* Premium Minha Igreja Button */}
+            <div className="px-4 mb-2">
+                <Link
+                    to="/configuracoes"
+                    className={cn(
+                        "group flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 border",
+                        location.pathname === "/configuracoes"
+                            ? "bg-primary text-primary-foreground border-primary shadow-md"
+                            : "bg-muted/50 border-border hover:bg-muted hover:border-primary/20 hover:shadow-sm"
+                    )}
+                >
+                    <div className={cn(
+                        "flex items-center justify-center w-7 h-7 rounded-md transition-colors duration-200",
+                        location.pathname === "/configuracoes"
+                            ? "bg-white/20"
+                            : "bg-background"
+                    )}>
+                        <Building2 className={cn(
+                            "w-4 h-4 transition-colors duration-200",
+                            location.pathname === "/configuracoes"
+                                ? "text-primary-foreground"
+                                : "text-muted-foreground group-hover:text-primary"
+                        )} />
+                    </div>
+
+                    <div className="flex flex-col leading-tight">
+                        <span className="font-semibold">Minha Igreja</span>
+                        <span className={cn(
+                            "text-[10px] font-normal",
+                            location.pathname === "/configuracoes"
+                                ? "text-primary-foreground/70"
+                                : "text-muted-foreground"
+                        )}>Configurações</span>
+                    </div>
+
+                    <ChevronRight className={cn(
+                        "w-4 h-4 ml-auto transition-all duration-200",
+                        location.pathname === "/configuracoes"
+                            ? "text-primary-foreground/70"
+                            : "text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5"
+                    )} />
+                </Link>
+            </div>
+
             {/* Main Navigation */}
             <div className="flex-1 overflow-y-auto py-6 px-4">
-                <div className="mb-2 px-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <div className="mb-2 px-2 text-xs font-medium text-muted-foreground">
                     Principal
                 </div>
                 <nav className="space-y-1 mb-8">
@@ -195,8 +234,8 @@ export function Sidebar() {
                     })}
                 </nav>
 
-                <div className="mb-2 px-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    Igreja
+                <div className="mb-2 px-2 text-xs font-medium text-muted-foreground">
+                    Ajustes
                 </div>
                 <nav className="space-y-1">
                     {secondaryItems.filter(item => {
@@ -228,39 +267,44 @@ export function Sidebar() {
                 </nav>
             </div>
 
-            {/* Trial Status Widget */}
+            {/* Trial Status - Minimal Design */}
             {trialInfo && (
                 <div className="px-4 mb-2">
-                    <div className="rounded-lg border bg-card p-3 shadow-sm">
-                        <div className="flex items-center gap-2 mb-2">
-                            <Clock className="h-3 w-3 text-primary" />
-                            <span className="text-xs font-semibold">Período de Teste</span>
+                    <div className="group rounded-xl border border-border/40 bg-muted/30 p-3 transition-colors duration-300 hover:border-border/60 hover:bg-muted/50">
+                        {/* Header with icon */}
+                        <div className="flex items-center gap-2 mb-1">
+                            <div className="flex h-5 w-5 items-center justify-center rounded-md bg-primary/10 text-primary">
+                                <Clock className="h-3 w-3" strokeWidth={2} />
+                            </div>
+                            <span className="text-[13px] font-medium text-foreground/80">Período de teste</span>
                         </div>
 
-                        <div className="space-y-1 mb-2">
-                            <div className="flex justify-between text-[10px] text-muted-foreground">
-                                <span>Progresso</span>
-                                <span>Restam {trialInfo.daysLeft} dias</span>
-                            </div>
-                            <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
-                                <div
-                                    className="h-full bg-primary rounded-full transition-all duration-500"
-                                    style={{ width: `${trialInfo.progress}%` }}
-                                />
+                        {/* Days remaining */}
+                        <p className="text-[12px] text-muted-foreground mb-3 ml-7">{trialInfo.daysLeft} dias restantes</p>
+
+                        {/* Progress bar with laser effect */}
+                        <div className="h-1 w-full bg-border/50 rounded-full overflow-hidden mb-3">
+                            <div
+                                className="relative h-full bg-primary/50 rounded-full transition-all duration-500"
+                                style={{ width: `${trialInfo.progress}%` }}
+                            >
+                                {/* Laser glow sweep */}
+                                <div className="absolute inset-0 rounded-full overflow-hidden">
+                                    <div
+                                        className="absolute inset-y-0 w-8 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-[laser_2.5s_ease-in-out_infinite]"
+                                        style={{ left: '-2rem' }}
+                                    />
+                                </div>
                             </div>
                         </div>
-
-                        <p className="text-[10px] text-muted-foreground mb-3 leading-tight">
-                            Após 7 dias a assinatura será feita automaticamente.
-                        </p>
 
                         <Button
-                            variant="outline"
+                            variant="ghost"
                             size="sm"
-                            className="w-full h-7 text-xs border-destructive/20 text-destructive hover:text-destructive hover:bg-destructive/10"
+                            className="w-full h-7 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/5"
                             onClick={() => setCancelDialogOpen(true)}
                         >
-                            Cancelar plano
+                            Cancelar assinatura
                         </Button>
                     </div>
                 </div>
@@ -288,7 +332,7 @@ export function Sidebar() {
             </div>
 
             {/* User Profile */}
-            <div className="p-4 border-t border-border/50">
+            <div className="p-4">
                 <div className="flex items-center justify-between gap-2">
                     <Link to="/perfil" className="flex items-center gap-3 px-2 py-1.5 hover:bg-secondary/50 rounded-md transition-colors cursor-pointer flex-1 min-w-0">
                         <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center overflow-hidden shrink-0">

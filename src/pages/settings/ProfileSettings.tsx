@@ -8,8 +8,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { User, Camera } from "lucide-react";
+import { User, Camera, Receipt, FileText, ExternalLink, AlertTriangle } from "lucide-react";
+import { DeleteAccountDialog } from "./components/DeleteAccountDialog";
+
+interface Invoice {
+    id: string;
+    number: string | null;
+    amount: number;
+    currency: string;
+    status: string;
+    created: number;
+    period_start: number;
+    period_end: number;
+    invoice_pdf: string | null;
+    hosted_invoice_url: string | null;
+}
 
 const profileSchema = z.object({
     firstName: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
@@ -35,6 +50,9 @@ export function ProfileSettings() {
     const { user, fetchUserData } = useAuth(); // Assuming fetchUserData is exposed or we need to reload session
     const [loading, setLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [invoices, setInvoices] = useState<Invoice[]>([]);
+    const [loadingInvoices, setLoadingInvoices] = useState(true);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     const form = useForm<ProfileForm>({
         resolver: zodResolver(profileSchema),
@@ -61,6 +79,44 @@ export function ProfileSettings() {
             });
         }
     }, [user]);
+
+    // Fetch invoices from Stripe via Edge Function
+    useEffect(() => {
+        const fetchInvoices = async () => {
+            try {
+                setLoadingInvoices(true);
+                const { data: { session } } = await supabase.auth.getSession();
+                const token = session?.access_token;
+
+                if (!token) {
+                    console.warn("No session token for fetching invoices");
+                    setLoadingInvoices(false);
+                    return;
+                }
+
+                const { data, error } = await supabase.functions.invoke('get-invoices', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                if (error) {
+                    console.error("Error fetching invoices:", error);
+                    return;
+                }
+
+                if (data?.invoices) {
+                    setInvoices(data.invoices);
+                }
+            } catch (error) {
+                console.error("Error fetching invoices:", error);
+            } finally {
+                setLoadingInvoices(false);
+            }
+        };
+
+        fetchInvoices();
+    }, []);
 
     const onSubmit = async (data: ProfileForm) => {
         if (!user?.id) return;
@@ -244,6 +300,123 @@ export function ProfileSettings() {
                     </form>
                 </CardContent>
             </Card>
+
+            {/* Invoices Section */}
+            <Card>
+                <CardHeader>
+                    <CardTitle>
+                        Faturas
+                    </CardTitle>
+                    <CardDescription>
+                        Histórico de faturas pagas da sua assinatura.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    {loadingInvoices ? (
+                        <div className="space-y-3">
+                            <Skeleton className="h-12 w-full" />
+                            <Skeleton className="h-12 w-full" />
+                            <Skeleton className="h-12 w-full" />
+                        </div>
+                    ) : invoices.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-8 text-center">
+                            <FileText className="h-12 w-12 text-muted-foreground/50 mb-3" />
+                            <p className="text-muted-foreground">
+                                Não existem faturas para essa conta.
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="space-y-3">
+                            {invoices.map((invoice) => (
+                                <div
+                                    key={invoice.id}
+                                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                                            <Receipt className="h-5 w-5 text-green-600" />
+                                        </div>
+                                        <div>
+                                            <p className="font-medium">
+                                                {invoice.number || `Fatura ${invoice.id.slice(-8)}`}
+                                            </p>
+                                            <p className="text-sm text-muted-foreground">
+                                                {new Date(invoice.created * 1000).toLocaleDateString('pt-BR', {
+                                                    day: '2-digit',
+                                                    month: 'long',
+                                                    year: 'numeric'
+                                                })}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <div className="text-right">
+                                            <p className="font-semibold">
+                                                {new Intl.NumberFormat('pt-BR', {
+                                                    style: 'currency',
+                                                    currency: invoice.currency.toUpperCase()
+                                                }).format(invoice.amount)}
+                                            </p>
+                                            <p className="text-xs text-green-600 font-medium">
+                                                Pago
+                                            </p>
+                                        </div>
+                                        {invoice.invoice_pdf && (
+                                            <a
+                                                href={invoice.invoice_pdf}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-muted-foreground hover:text-foreground transition-colors"
+                                                title="Baixar PDF"
+                                            >
+                                                <ExternalLink className="h-4 w-4" />
+                                            </a>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+
+            {/* Cancel Subscription / Delete Account Section */}
+            {!user?.branch_id && (
+                <Card className="border-red-100 bg-red-50/30">
+                    <CardHeader>
+                        <CardTitle className="text-red-600 flex items-center gap-2 text-xl">
+                            <AlertTriangle className="h-5 w-5" />
+                            Zona de Perigo
+                        </CardTitle>
+                        <CardDescription>
+                            Caso você não deseje mais continuar com a sua assinatura e queira encerrar o uso da plataforma Churchfy,
+                            você pode excluir sua conta permanentemente.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div className="text-sm text-muted-foreground max-w-xl">
+                                <p>
+                                    Ao clicar no botão ao lado, você iniciará o processo de exclusão total dos seus dados.
+                                    <strong> Atenção:</strong> Esta ação é irreversível e apagará todos os registros da sua igreja.
+                                </p>
+                            </div>
+                            <Button
+                                variant="destructive"
+                                onClick={() => setShowDeleteDialog(true)}
+                                className="bg-red-600 hover:bg-red-700 whitespace-nowrap"
+                            >
+                                Cancelar minha assinatura
+                            </Button>
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
+
+            <DeleteAccountDialog
+                open={showDeleteDialog}
+                onOpenChange={setShowDeleteDialog}
+            />
         </div>
     );
 }

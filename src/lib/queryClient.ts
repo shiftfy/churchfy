@@ -29,6 +29,7 @@ export const queryKeys = {
     visitors: (orgId: string) => ['visitors', orgId] as const,
     visitorsFlow: (orgId: string) => ['visitors', 'flow', orgId] as const,
     people: (orgId: string) => ['people', orgId] as const,
+    disciplers: (orgId: string) => ['disciplers', orgId] as const,
 
     // Forms
     forms: (orgId: string) => ['forms', orgId] as const,

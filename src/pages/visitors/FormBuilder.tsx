@@ -16,7 +16,18 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
+    SelectGroup,
+    SelectLabel,
 } from "@/components/ui/select";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 import { Trash2, Plus, ArrowLeft, Save, Eye, ChevronDown, ChevronUp, GripVertical, Lock } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -221,7 +232,7 @@ function FormPreview({ fields, title, description, settings }: { fields: FormFie
                                                 {field.label} {field.required && <span style={{ color: btnColor }}>*</span>}
                                             </Label>
 
-                                            {field.type === 'textarea' ? (
+                                            {field.type === 'textarea' || field.type === 'address' || field.type === 'prayer_request' ? (
                                                 <div
                                                     className="h-20 w-full bg-transparent border-0 border-b-2 text-sm p-0 py-2 resize-none"
                                                     style={{
@@ -420,13 +431,22 @@ function SortableFieldItem({
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="text">Texto Curto</SelectItem>
-                                        <SelectItem value="email">Email</SelectItem>
-                                        <SelectItem value="phone">Telefone/WhatsApp</SelectItem>
-                                        <SelectItem value="date">Data</SelectItem>
-                                        <SelectItem value="textarea">Texto Longo</SelectItem>
-                                        <SelectItem value="select">Seleção (Lista)</SelectItem>
-                                        <SelectItem value="checkbox">Caixa de Seleção</SelectItem>
+                                        <SelectGroup>
+                                            <SelectLabel>Padrão</SelectLabel>
+                                            <SelectItem value="email">Email</SelectItem>
+                                            <SelectItem value="phone">Telefone/WhatsApp</SelectItem>
+                                            <SelectItem value="address">Endereço</SelectItem>
+                                            <SelectItem value="prayer_request">Pedido de Oração</SelectItem>
+                                            <SelectItem value="date">Data (Nascimento)</SelectItem>
+                                        </SelectGroup>
+                                        <SelectGroup>
+                                            <SelectLabel>Personalizados</SelectLabel>
+                                            <SelectItem value="text">Texto Curto</SelectItem>
+                                            <SelectItem value="textarea">Texto Longo</SelectItem>
+                                            <SelectItem value="date">Data</SelectItem>
+                                            <SelectItem value="select">Seleção (Lista)</SelectItem>
+                                            <SelectItem value="checkbox">Caixa de Seleção</SelectItem>
+                                        </SelectGroup>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -666,14 +686,15 @@ export default function FormBuilder() {
         }
     }, [selectedBranchId, branches, setValue]);
 
-    const addField = () => {
+    const addField = (type: FormFieldType = "text", label: string = "Novo Campo", placeholder: string = "") => {
         const newId = crypto.randomUUID();
         setFields([
             ...fields,
             {
                 id: newId,
-                type: "text",
-                label: "Novo Campo",
+                type,
+                label,
+                placeholder,
                 required: false,
                 width: "full",
             },
@@ -893,10 +914,53 @@ export default function FormBuilder() {
                             <Card>
                                 <CardHeader className="flex flex-row items-center justify-between">
                                     <CardTitle>Campos do Formulário</CardTitle>
-                                    <Button type="button" variant="outline" size="sm" onClick={addField}>
-                                        <Plus className="w-4 h-4 mr-2" />
-                                        Adicionar Campo
-                                    </Button>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button type="button" variant="outline" size="sm">
+                                                <Plus className="w-4 h-4 mr-2" />
+                                                Adicionar Campo
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end" className="w-56">
+                                            <DropdownMenuLabel>Padrão</DropdownMenuLabel>
+                                            <DropdownMenuGroup>
+                                                <DropdownMenuItem onClick={() => addField("date", "Data de Nascimento")}>
+                                                    Data de Nascimento
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => addField("phone", "Telefone/WhatsApp", "(00) 00000-0000")}>
+                                                    Telefone/WhatsApp
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => addField("email", "Email", "exemplo@email.com")}>
+                                                    Email
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => addField("address", "Endereço", "Rua, Número, Bairro...")}>
+                                                    Endereço
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => addField("prayer_request", "Pedido de Oração", "Descreva seu pedido...")}>
+                                                    Pedido de Oração
+                                                </DropdownMenuItem>
+                                            </DropdownMenuGroup>
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuLabel>Personalizados</DropdownMenuLabel>
+                                            <DropdownMenuGroup>
+                                                <DropdownMenuItem onClick={() => addField("text", "Texto Curto")}>
+                                                    Texto Curto
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => addField("textarea", "Texto Longo")}>
+                                                    Texto Longo
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => addField("date", "Data")}>
+                                                    Data
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => addField("select", "Seleção (Lista)")}>
+                                                    Seleção (lista)
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => addField("checkbox", "Caixa de Seleção")}>
+                                                    Caixa de seleção
+                                                </DropdownMenuItem>
+                                            </DropdownMenuGroup>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
 
@@ -952,9 +1016,52 @@ export default function FormBuilder() {
                                     {customFields.length === 0 && (
                                         <div className="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg">
                                             <p>Nenhum campo personalizado adicionado.</p>
-                                            <Button variant="link" onClick={addField}>
-                                                Clique para adicionar
-                                            </Button>
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button variant="link">
+                                                        Clique para adicionar
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="center" className="w-56">
+                                                    <DropdownMenuLabel>Padrão</DropdownMenuLabel>
+                                                    <DropdownMenuGroup>
+                                                        <DropdownMenuItem onClick={() => addField("date", "Data de Nascimento")}>
+                                                            Data de Nascimento
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem onClick={() => addField("phone", "Telefone/WhatsApp", "(00) 00000-0000")}>
+                                                            Telefone/WhatsApp
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem onClick={() => addField("email", "Email", "exemplo@email.com")}>
+                                                            Email
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem onClick={() => addField("address", "Endereço", "Rua, Número, Bairro...")}>
+                                                            Endereço
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem onClick={() => addField("prayer_request", "Pedido de Oração", "Descreva seu pedido...")}>
+                                                            Pedido de Oração
+                                                        </DropdownMenuItem>
+                                                    </DropdownMenuGroup>
+                                                    <DropdownMenuSeparator />
+                                                    <DropdownMenuLabel>Personalizados</DropdownMenuLabel>
+                                                    <DropdownMenuGroup>
+                                                        <DropdownMenuItem onClick={() => addField("text", "Texto Curto")}>
+                                                            Texto Curto
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem onClick={() => addField("textarea", "Texto Longo")}>
+                                                            Texto Longo
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem onClick={() => addField("date", "Data")}>
+                                                            Data
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem onClick={() => addField("select", "Seleção (Lista)")}>
+                                                            Seleção (lista)
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem onClick={() => addField("checkbox", "Caixa de Seleção")}>
+                                                            Caixa de seleção
+                                                        </DropdownMenuItem>
+                                                    </DropdownMenuGroup>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
                                         </div>
                                     )}
 

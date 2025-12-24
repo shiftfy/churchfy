@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { usePeople } from "@/hooks/useData";
 import {
     Table,
@@ -21,6 +22,7 @@ interface Person {
     name: string;
     phone: string | null;
     email: string | null;
+    address: string | null;
     birthdate: string | null;
     stage_id: string | null;
     journey_id: string | null;
@@ -57,6 +59,7 @@ function TableSkeleton() {
 }
 
 export function VisitorList() {
+    const navigate = useNavigate();
     const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
 
     // React Query hook - dados cacheados
@@ -119,7 +122,7 @@ export function VisitorList() {
                                 <TableRow
                                     key={person.id}
                                     className="cursor-pointer hover:bg-muted/50 transition-colors"
-                                    onClick={() => setSelectedPerson(person)}
+                                    onClick={() => navigate(`/pessoas/${person.id}`)}
                                 >
                                     <TableCell className="font-medium">
                                         <div className="flex items-center gap-2">

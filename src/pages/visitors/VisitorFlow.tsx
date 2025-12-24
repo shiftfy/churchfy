@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
     DndContext,
     DragOverlay,
@@ -72,6 +73,7 @@ interface Person {
     name: string;
     phone: string | null;
     email: string | null;
+    address: string | null;
     birthdate: string | null;
     stage_id: string | null;
     journey_id: string | null;
@@ -88,6 +90,7 @@ interface Person {
 }
 
 export function VisitorFlow() {
+    const navigate = useNavigate();
     const { user, signOut } = useAuth();
     // ... (rest of simple states)
 
@@ -171,7 +174,7 @@ export function VisitorFlow() {
 
     const handleCreateJourney = async () => {
         if (!newJourneyTitle.trim()) {
-            toast.error("O título da jornada é obrigatório");
+            toast.error("O título do fluxo é obrigatório");
             return;
         }
 
@@ -199,7 +202,7 @@ export function VisitorFlow() {
                 setNewJourneyTitle("");
                 setNewJourneyDescription("");
                 setIsAddingJourney(false);
-                toast.success("Jornada criada com sucesso!");
+                toast.success("Fluxo criado com sucesso!");
 
                 // Create default stages for new journey
                 const defaultStages = ["VISITANTES"];
@@ -214,7 +217,7 @@ export function VisitorFlow() {
             }
         } catch (error: any) {
             console.error("Error creating journey:", error);
-            toast.error("Erro ao criar jornada: " + (error.message || "Erro desconhecido"));
+            toast.error("Erro ao criar fluxo: " + (error.message || "Erro desconhecido"));
         }
     };
 
@@ -455,14 +458,14 @@ export function VisitorFlow() {
             <div className="space-y-6 animate-in fade-in duration-300">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Jornadas</h1>
+                        <h1 className="text-3xl font-bold tracking-tight">Fluxos</h1>
                         <p className="text-muted-foreground">
                             Gerencie os fluxos de acompanhamento da sua igreja.
                         </p>
                     </div>
                     <Button onClick={() => setIsAddingJourney(true)}>
                         <Plus className="w-4 h-4 mr-2" />
-                        Nova Jornada
+                        Novo Fluxo
                     </Button>
                 </div>
 
@@ -509,13 +512,13 @@ export function VisitorFlow() {
                         {journeys.length === 0 && (
                             <div className="col-span-full flex flex-col items-center justify-center py-12 text-center border-2 border-dashed rounded-lg">
                                 <Map className="w-12 h-12 text-muted-foreground mb-4 opacity-50" />
-                                <h3 className="text-lg font-medium mb-2">Nenhuma jornada encontrada</h3>
+                                <h3 className="text-lg font-medium mb-2">Nenhum fluxo encontrado</h3>
                                 <p className="text-muted-foreground mb-4">
-                                    Crie sua primeira jornada para começar a organizar as pessoas.
+                                    Crie seu primeiro fluxo para começar a organizar as pessoas.
                                 </p>
                                 <Button onClick={() => setIsAddingJourney(true)}>
                                     <Plus className="w-4 h-4 mr-2" />
-                                    Criar Primeira Jornada
+                                    Criar Primeiro Fluxo
                                 </Button>
                             </div>
                         )}
@@ -525,14 +528,14 @@ export function VisitorFlow() {
                 <Dialog open={isAddingJourney} onOpenChange={setIsAddingJourney}>
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>Nova Jornada</DialogTitle>
+                            <DialogTitle>Novo Fluxo</DialogTitle>
                             <DialogDescription>
                                 Crie um novo fluxo de acompanhamento (ex: Visitantes, Batismo, Membresia).
                             </DialogDescription>
                         </DialogHeader>
                         <div className="space-y-4 py-4">
                             <div className="space-y-2">
-                                <Label>Nome da Jornada</Label>
+                                <Label>Nome do Fluxo</Label>
                                 <Input
                                     value={newJourneyTitle}
                                     onChange={(e) => setNewJourneyTitle(e.target.value)}
@@ -549,7 +552,7 @@ export function VisitorFlow() {
                                 <Textarea
                                     value={newJourneyDescription}
                                     onChange={(e) => setNewJourneyDescription(e.target.value)}
-                                    placeholder="Descrição breve sobre esta jornada"
+                                    placeholder="Descrição breve sobre este fluxo"
                                 />
                             </div>
                         </div>
@@ -558,7 +561,7 @@ export function VisitorFlow() {
                                 Cancelar
                             </Button>
                             <Button onClick={handleCreateJourney} disabled={!newJourneyTitle.trim()}>
-                                Criar Jornada
+                                Criar Fluxo
                             </Button>
                         </DialogFooter>
                     </DialogContent>
@@ -578,7 +581,7 @@ export function VisitorFlow() {
                         <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
                             {selectedJourney.title}
                             <span className="text-xs font-normal text-muted-foreground bg-muted px-2 py-0.5 rounded-full border">
-                                Jornada
+                                Fluxo
                             </span>
                         </h1>
                         <p className="text-muted-foreground text-sm">
@@ -615,7 +618,7 @@ export function VisitorFlow() {
                         Problema de Conta Identificado
                     </h3>
                     <p className="text-sm mt-2">
-                        Sua conta de usuário não está vinculada a nenhuma organização. Isso impede a criação de jornadas.
+                        Sua conta de usuário não está vinculada a nenhuma organização. Isso impede a criação de fluxos.
                         Provavelmente houve uma falha durante o seu cadastro.
                     </p>
                     <div className="mt-4 flex gap-4">
@@ -679,7 +682,7 @@ export function VisitorFlow() {
                                                 <KanbanCard
                                                     key={person.id}
                                                     person={person}
-                                                    onClick={() => setSelectedPerson(person)}
+                                                    onClick={() => navigate(`/pessoas/${person.id}`)}
                                                 />
                                             ))}
                                     </SortableContext>

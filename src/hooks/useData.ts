@@ -23,6 +23,7 @@ export function useDashboardMetrics() {
         },
         enabled: !!orgId,
         staleTime: 5 * 60 * 1000, // 5 minutos
+        refetchOnWindowFocus: false, // Explicitly disable refetch on window focus
     });
 }
 
@@ -48,6 +49,7 @@ export function useDashboardRecent() {
         },
         enabled: !!orgId,
         staleTime: 2 * 60 * 1000, // 2 minutos
+        refetchOnWindowFocus: false,
     });
 }
 
@@ -73,6 +75,7 @@ export function useBranches() {
         },
         enabled: !!orgId,
         staleTime: 5 * 60 * 1000,
+        refetchOnWindowFocus: false,
     });
 
     const createBranch = useMutation({
@@ -144,6 +147,7 @@ export function usePeople() {
                 .from('people')
                 .select('*, visitor_responses(created_at, responses, forms(title, fields))')
                 .eq('organization_id', orgId)
+                .neq('is_discipler', true) // Filter out disciplers from the people list
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
@@ -151,6 +155,7 @@ export function usePeople() {
         },
         enabled: !!orgId,
         staleTime: 2 * 60 * 1000,
+        refetchOnWindowFocus: false,
     });
 
     const deletePerson = useMutation({
@@ -180,6 +185,102 @@ export function usePeople() {
         ...query,
         deletePerson,
         archivePerson,
+    };
+}
+
+// Hook para Disciplers
+export function useDisciplers() {
+    const { user } = useAuth();
+    const orgId = user?.organization_id;
+    const queryClient = useQueryClient();
+
+    const query = useQuery({
+        queryKey: queryKeys.disciplers(orgId || ''),
+        queryFn: async () => {
+            if (!orgId) throw new Error('No organization ID');
+
+            // Fetch disciplers and count their disciples
+            const { data, error } = await supabase
+                .from('people')
+                .select('id, name, phone, birth_date')
+                .eq('organization_id', orgId)
+                .eq('is_discipler', true)
+                .order('name', { ascending: true });
+
+            if (error) throw error;
+
+            // For each discipler, count how many people they are discipling
+            const disciplersWithCount = await Promise.all(
+                (data || []).map(async (discipler) => {
+                    const { count } = await supabase
+                        .from('people')
+                        .select('id', { count: 'exact', head: true })
+                        .eq('organization_id', orgId)
+                        .eq('discipler_id', discipler.id);
+
+                    return {
+                        ...discipler,
+                        disciples_count: count || 0,
+                    };
+                })
+            );
+
+            return disciplersWithCount;
+        },
+        enabled: !!orgId,
+        staleTime: 2 * 60 * 1000,
+        refetchOnWindowFocus: false,
+    });
+
+    const updateDiscipler = useMutation({
+        mutationFn: async ({ id, data }: { id: string; data: any }) => {
+            const { error } = await supabase
+                .from('people')
+                .update(data)
+                .eq('id', id)
+                .eq('organization_id', orgId); // Safety check
+
+            if (error) throw error;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: queryKeys.disciplers(orgId || '') });
+        },
+    });
+
+    const createDiscipler = useMutation({
+        mutationFn: async (data: any) => {
+            if (!orgId) throw new Error('No organization ID');
+            const { error } = await supabase
+                .from('people')
+                .insert({ ...data, organization_id: orgId, is_discipler: true });
+
+            if (error) throw error;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: queryKeys.disciplers(orgId || '') });
+        },
+    });
+
+    const deleteDiscipler = useMutation({
+        mutationFn: async (id: string) => {
+            const { error } = await supabase
+                .from('people')
+                .delete()
+                .eq('id', id)
+                .eq('organization_id', orgId); // Safety check
+
+            if (error) throw error;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: queryKeys.disciplers(orgId || '') });
+        },
+    });
+
+    return {
+        ...query,
+        updateDiscipler,
+        createDiscipler,
+        deleteDiscipler,
     };
 }
 
@@ -214,6 +315,7 @@ export function useForms() {
         },
         enabled: !!orgId,
         staleTime: 2 * 60 * 1000,
+        refetchOnWindowFocus: false,
     });
 
     const deleteForm = useMutation({
@@ -254,6 +356,7 @@ export function useJourneys() {
         },
         enabled: !!orgId,
         staleTime: 5 * 60 * 1000,
+        refetchOnWindowFocus: false,
     });
 
     const invalidate = () => {
@@ -288,6 +391,7 @@ export function useOrganization() {
         },
         enabled: !!orgId,
         staleTime: 10 * 60 * 1000, // 10 minutos - dados mudam raramente
+        refetchOnWindowFocus: false,
     });
 
     const updateOrganization = useMutation({

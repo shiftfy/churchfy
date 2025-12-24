@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { SuperAdminRoute } from "@/components/auth/SuperAdminRoute";
@@ -16,15 +16,18 @@ import { WhatsAppSettings } from "@/pages/whatsapp/WhatsAppSettings";
 import { VisitorFlow } from "@/pages/visitors/VisitorFlow";
 import { OrganizationSettings } from "@/pages/settings/OrganizationSettings";
 import { ProfileSettings } from "@/pages/settings/ProfileSettings";
+import { DisciplersList } from "@/pages/disciplers/DisciplersList";
 import { SuperAdminDashboard } from "@/pages/admin/SuperAdminDashboard";
 import { UserManagement } from "@/pages/admin/UserManagement";
 import { OrganizationManagement } from "@/pages/admin/OrganizationManagement";
+import { PersonProfile } from "@/pages/people/PersonProfile";
+import { TagsAndFields } from "@/pages/settings/TagsAndFields";
 
 import { Onboarding } from "@/pages/onboarding/Onboarding";
 
 function App() {
-  // Force re-render on location change to ensure Routes update
-  useLocation();
+  // Force re-render on location change to ensure Routes update - REMOVED as it causes unnecessary re-renders
+  // useLocation();
 
   return (
     <Routes>
@@ -57,9 +60,12 @@ function App() {
           <Route path="todos" element={<VisitorList />} />
           <Route path="fluxo" element={<VisitorFlow />} />
         </Route>
+        <Route path="/pessoas/:id" element={<PersonProfile />} />
         <Route path="/whatsapp" element={<WhatsAppSettings />} />
+        <Route path="/discipuladores" element={<DisciplersList />} />
         <Route path="/filiais" element={<Branches />} />
         <Route path="/configuracoes" element={<OrganizationSettings />} />
+        <Route path="/configuracoes/tags-campos" element={<TagsAndFields />} />
         <Route path="/perfil" element={<ProfileSettings />} />
       </Route>
 

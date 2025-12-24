@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Textarea } from "@/components/ui/textarea";
 import { SettingsPageSkeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { Building2, Upload, Plus, Trash2 } from "lucide-react";
+import { Building2, Upload, Plus, Trash2, Sparkles } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -150,14 +150,23 @@ export function OrganizationSettings() {
 
     return (
         <div className="space-y-8 animate-in fade-in duration-300 pb-12">
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight">Minha Igreja</h1>
-                <p className="text-muted-foreground">
-                    Gerencie as informações da sua organização de forma centralizada.
-                </p>
-                <p className="text-sm text-blue-600 mt-2 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-md border border-blue-100 dark:border-blue-900 inline-block">
-                    💡 Dica: Mantenha estas informações atualizadas. Nossa <strong>Inteligência Artificial</strong> usará estes dados para responder perguntas dos seus visitantes!
-                </p>
+            <div className="flex flex-col gap-6">
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Minha Igreja</h1>
+                    <p className="text-muted-foreground">
+                        Gerencie as informações da sua organização de forma centralizada.
+                    </p>
+                </div>
+
+                {/* Inline AI Tip */}
+                <div className="group inline-flex items-center gap-2.5 rounded-full border border-border/40 bg-muted/30 px-3.5 py-2 transition-colors duration-300 hover:border-border/60 hover:bg-muted/50">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-md bg-primary/10 text-primary">
+                        <Sparkles className="h-3 w-3" strokeWidth={2} />
+                    </div>
+                    <p className="text-[13px] text-muted-foreground">
+                        <span className="font-medium text-foreground/80">IA ativa</span> — estas informações são usadas para responder seus visitantes automaticamente.
+                    </p>
+                </div>
             </div>
 
             <FormProvider {...form}>
