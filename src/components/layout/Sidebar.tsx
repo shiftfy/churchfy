@@ -41,6 +41,7 @@ const navItems: NavItem[] = [
 const secondaryItems: NavItem[] = [
     { title: "WhatsApp", href: "/whatsapp", icon: MessageSquare },
     { title: "Inputs e Tags", href: "/configuracoes/tags-campos", icon: Settings },
+    { title: "Automações", href: "/automacoes", icon: GitMerge },
     { title: "Filiais", href: "/filiais", icon: Building2, prefetchKey: 'branches' },
 ];
 

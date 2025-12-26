@@ -239,6 +239,45 @@ function WhatsAppSettingsSkeleton() {
     );
 }
 
+// Automation List Skeleton
+function AutomationListSkeleton() {
+    return (
+        <div className="space-y-6 animate-in fade-in duration-300">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div className="space-y-2">
+                    <Skeleton className="h-8 w-48" />
+                    <Skeleton className="h-4 w-96 max-w-full" />
+                </div>
+                <Skeleton className="h-10 w-40 rounded-md" />
+            </div>
+
+            <div className="grid gap-4">
+                {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="rounded-lg border bg-card p-6 shadow-sm">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <Skeleton className="h-6 w-48" />
+                                    <Skeleton className="h-5 w-16 rounded-full" />
+                                </div>
+                                <Skeleton className="h-4 w-32" />
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Skeleton className="h-6 w-24 rounded-full" />
+                                <Skeleton className="h-8 w-8 rounded-md" />
+                                <Skeleton className="h-8 w-8 rounded-md" />
+                            </div>
+                        </div>
+                        <div className="mt-4 pt-4 border-t">
+                            <Skeleton className="h-8 w-64 rounded-lg" />
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 export {
     Skeleton,
     MetricCardSkeleton,
@@ -250,4 +289,5 @@ export {
     FormFieldSkeleton,
     SettingsPageSkeleton,
     WhatsAppSettingsSkeleton,
+    AutomationListSkeleton,
 };

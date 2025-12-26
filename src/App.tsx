@@ -22,6 +22,8 @@ import { UserManagement } from "@/pages/admin/UserManagement";
 import { OrganizationManagement } from "@/pages/admin/OrganizationManagement";
 import { PersonProfile } from "@/pages/people/PersonProfile";
 import { TagsAndFields } from "@/pages/settings/TagsAndFields";
+import { AutomationList } from "@/pages/automations/AutomationList";
+import { AutomationBuilder } from "@/pages/automations/AutomationBuilder";
 
 import { Onboarding } from "@/pages/onboarding/Onboarding";
 
@@ -66,6 +68,11 @@ function App() {
         <Route path="/filiais" element={<Branches />} />
         <Route path="/configuracoes" element={<OrganizationSettings />} />
         <Route path="/configuracoes/tags-campos" element={<TagsAndFields />} />
+        <Route path="/automacoes">
+          <Route index element={<AutomationList />} />
+          <Route path="nova" element={<AutomationBuilder />} />
+          <Route path="editar/:id" element={<AutomationBuilder />} />
+        </Route>
         <Route path="/perfil" element={<ProfileSettings />} />
       </Route>
 
