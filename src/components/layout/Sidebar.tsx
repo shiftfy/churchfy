@@ -107,7 +107,7 @@ export function Sidebar() {
                     )}
                 >
                     <div className={cn(
-                        "flex items-center justify-center w-7 h-7 rounded-md transition-colors duration-200",
+                        "flex items-center justify-center w-7 h-7 rounded-md transition-colors duration-200 group-hover:scale-105",
                         location.pathname === "/configuracoes"
                             ? "bg-white/20"
                             : "bg-background"
@@ -134,7 +134,7 @@ export function Sidebar() {
                         "w-4 h-4 ml-auto transition-all duration-200",
                         location.pathname === "/configuracoes"
                             ? "text-primary-foreground/70"
-                            : "text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5"
+                            : "text-muted-foreground group-hover:text-primary group-hover:translate-x-1"
                     )} />
                 </Link>
             </div>
@@ -161,20 +161,20 @@ export function Sidebar() {
                                         onClick={() => toggleMenu(item.title)}
                                         onMouseEnter={() => handleMouseEnter(item.prefetchKey)}
                                         className={cn(
-                                            "w-full flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                                            "group w-full flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
                                             isActive
                                                 ? "bg-secondary text-secondary-foreground"
-                                                : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
+                                                : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground hover:translate-x-1"
                                         )}
                                     >
                                         <div className="flex items-center gap-3">
-                                            <Icon className="w-4 h-4" />
+                                            <Icon className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
                                             <span>{item.title}</span>
                                         </div>
                                         {isOpen ? (
-                                            <ChevronDown className="w-4 h-4" />
+                                            <ChevronDown className="w-4 h-4 transition-transform duration-200" />
                                         ) : (
-                                            <ChevronRight className="w-4 h-4" />
+                                            <ChevronRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
                                         )}
                                     </Link>
 
@@ -188,10 +188,10 @@ export function Sidebar() {
                                                         to={subItem.href}
                                                         onMouseEnter={() => handleMouseEnter(subItem.prefetchKey)}
                                                         className={cn(
-                                                            "block px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                                                            "block px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
                                                             isSubActive
-                                                                ? "text-primary bg-primary/10"
-                                                                : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                                                                ? "text-primary bg-primary/10 translate-x-1"
+                                                                : "text-muted-foreground hover:text-foreground hover:bg-secondary/50 hover:translate-x-1"
                                                         )}
                                                     >
                                                         {subItem.title}
@@ -210,13 +210,13 @@ export function Sidebar() {
                                 to={item.href}
                                 onMouseEnter={() => handleMouseEnter(item.prefetchKey)}
                                 className={cn(
-                                    "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                                    "group flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
                                     isActive
                                         ? "bg-secondary text-secondary-foreground"
-                                        : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
+                                        : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground hover:translate-x-1"
                                 )}
                             >
-                                <Icon className="w-4 h-4" />
+                                <Icon className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
                                 <span>{item.title}</span>
                             </Link>
                         );
@@ -242,13 +242,13 @@ export function Sidebar() {
                                 to={item.href}
                                 onMouseEnter={() => handleMouseEnter(item.prefetchKey)}
                                 className={cn(
-                                    "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                                    "group flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
                                     isActive
                                         ? "bg-secondary text-secondary-foreground"
-                                        : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
+                                        : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground hover:translate-x-1"
                                 )}
                             >
-                                <Icon className="w-4 h-4" />
+                                <Icon className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
                                 <span>{item.title}</span>
                             </Link>
                         );
@@ -309,13 +309,13 @@ export function Sidebar() {
                 <Link
                     to="/ajuda"
                     className={cn(
-                        "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors border",
+                        "group flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-200 border",
                         location.pathname === "/ajuda"
-                            ? "bg-primary text-primary-foreground border-primary"
-                            : "border-border hover:border-primary/50 hover:bg-primary/5 text-foreground"
+                            ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                            : "border-border hover:border-primary/50 hover:bg-primary/5 text-foreground hover:translate-x-1"
                     )}
                 >
-                    <HelpCircle className="w-4 h-4" />
+                    <HelpCircle className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
                     <span>Ajuda</span>
                 </Link>
             </div>

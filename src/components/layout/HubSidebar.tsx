@@ -42,10 +42,10 @@ export function HubSidebar() {
                 {/* Persons Service (Active) - Connected Tab Style */}
                 <div className="relative w-full flex justify-end">
                     <div className={cn(
-                        "flex items-center justify-center w-[68px] h-10 rounded-l-xl rounded-r-none cursor-pointer transition-all duration-200 mr-[-24px] z-10",
+                        "group flex items-center justify-center w-[68px] h-10 rounded-l-xl rounded-r-none cursor-pointer transition-all duration-200 mr-[-24px] z-10 hover:w-[72px]",
                         "bg-[#fcfcfc] text-[#2b354c] pr-6"
                     )}>
-                        <Users className="w-5 h-5" />
+                        <Users className="w-5 h-5 transition-transform duration-200 group-hover:scale-110" />
                     </div>
                 </div>
 
@@ -55,7 +55,7 @@ export function HubSidebar() {
                         "flex items-center justify-center w-10 h-10 rounded-xl cursor-not-allowed transition-all duration-200",
                         "text-white/40 hover:text-white/60 hover:bg-white/5"
                     )}>
-                        <LayoutGrid className="w-5 h-5" />
+                        <LayoutGrid className="w-5 h-5 transition-transform duration-200 group-hover:scale-110" />
                     </div>
                 </div>
 
@@ -64,7 +64,7 @@ export function HubSidebar() {
                         "flex items-center justify-center w-10 h-10 rounded-xl cursor-not-allowed transition-all duration-200",
                         "text-white/40 hover:text-white/60 hover:bg-white/5"
                     )}>
-                        <Settings className="w-5 h-5" />
+                        <Settings className="w-5 h-5 transition-transform duration-200 group-hover:scale-110" />
                     </div>
                 </div>
             </div>
@@ -126,18 +126,18 @@ export function HubSidebar() {
                                 <DropdownMenuItem asChild className="p-0 focus:bg-transparent focus:text-white outline-none ring-0 focus-visible:ring-0">
                                     <Link
                                         to="/perfil"
-                                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-white/70 hover:text-white focus:text-white hover:bg-white/10 focus:bg-white/10 transition-all duration-200 cursor-pointer group outline-none select-none"
+                                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-white/70 hover:text-white focus:text-white hover:bg-white/10 focus:bg-white/10 transition-all duration-200 cursor-pointer group outline-none select-none hover:translate-x-1"
                                     >
-                                        <UserIcon className="w-4 h-4 text-white/50 group-hover:text-white/90 group-focus:text-white/90 transition-colors" />
+                                        <UserIcon className="w-4 h-4 text-white/50 group-hover:text-white/90 group-focus:text-white/90 transition-colors group-hover:scale-110" />
                                         <span className="text-[13px] font-normal tracking-wide">Meu Perfil</span>
                                     </Link>
                                 </DropdownMenuItem>
 
                                 <DropdownMenuItem
                                     onClick={handleLogout}
-                                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-white/70 hover:text-rose-300 focus:text-rose-300 hover:bg-rose-500/10 focus:bg-rose-500/10 transition-all duration-200 cursor-pointer group outline-none select-none"
+                                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-white/70 hover:text-rose-300 focus:text-rose-300 hover:bg-rose-500/10 focus:bg-rose-500/10 transition-all duration-200 cursor-pointer group outline-none select-none hover:translate-x-1"
                                 >
-                                    <LogOut className="w-4 h-4 text-white/50 group-hover:text-rose-400 group-focus:text-rose-400 transition-colors" />
+                                    <LogOut className="w-4 h-4 text-white/50 group-hover:text-rose-400 group-focus:text-rose-400 transition-colors group-hover:scale-110" />
                                     <span className="text-[13px] font-normal tracking-wide">Sair</span>
                                 </DropdownMenuItem>
                             </div>
