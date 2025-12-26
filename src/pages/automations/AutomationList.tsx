@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Plus, GitMerge, ArrowRight, Trash2, Edit2 } from "lucide-react";
+import { Plus, GitMerge, ArrowRight, Trash2, Edit2, Zap, MessageSquare, Tag as TagIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { AutomationListSkeleton } from "@/components/ui/skeleton";
@@ -100,6 +100,22 @@ export function AutomationList() {
         }
     };
 
+    const getActionIcon = (type: string) => {
+        switch (type) {
+            case 'add_tag': return <TagIcon className="w-3 h-3 text-indigo-500" />;
+            case 'send_whatsapp': return <MessageSquare className="w-3 h-3 text-green-500" />;
+            default: return <Zap className="w-3 h-3" />;
+        }
+    };
+
+    const getActionLabel = (type: string) => {
+        switch (type) {
+            case 'add_tag': return 'Adicionar Tag';
+            case 'send_whatsapp': return 'Enviar WhatsApp';
+            default: return type;
+        }
+    };
+
 
     if (loading) {
         return <AutomationListSkeleton />;
@@ -141,60 +157,77 @@ export function AutomationList() {
                     </CardContent>
                 </Card>
             ) : (
-                <div className="grid gap-4">
+                <div className="grid gap-3">
                     {automations.map((automation) => (
-                        <Card key={automation.id} className={`transition-all hover:shadow-sm ${!automation.is_active ? 'opacity-75 bg-muted/20' : ''}`}>
-                            <CardHeader className="p-4 sm:p-6">
-                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                                    <div className="space-y-1">
-                                        <div className="flex items-center gap-2">
-                                            <CardTitle className="text-lg">{automation.name}</CardTitle>
-                                            <Badge variant={automation.is_active ? "default" : "secondary"}>
-                                                {automation.is_active ? "Ativo" : "Pausado"}
-                                            </Badge>
-                                        </div>
-                                        <CardDescription className="flex items-center gap-2 text-xs sm:text-sm">
-                                            <span>
-                                                Criado em {format(new Date(automation.created_at), "dd 'de' MMMM, yyyy", { locale: ptBR })}
-                                            </span>
+                        <Card key={automation.id} className={`transition-all hover:shadow-md ${!automation.is_active ? 'opacity-75 bg-muted/30' : 'bg-card'}`}>
+                            {/* Header Section - Compact */}
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 pb-2 gap-4">
+                                <div className="flex items-center gap-3">
+                                    <div>
+                                        <CardTitle className="text-base font-semibold leading-none mb-1 flex items-center gap-2">
+                                            {automation.name}
+                                        </CardTitle>
+                                        <CardDescription className="text-xs">
+                                            Criado em {format(new Date(automation.created_at), "dd MMM, yyyy", { locale: ptBR })}
                                         </CardDescription>
                                     </div>
+                                </div>
 
-                                    <div className="flex items-center gap-2 w-full sm:w-auto mt-2 sm:mt-0">
-                                        <div className="flex items-center gap-2 mr-2">
-                                            <Switch
-                                                checked={automation.is_active}
-                                                onCheckedChange={() => toggleStatus(automation)}
-                                            />
-                                            <span className="text-sm text-muted-foreground hidden sm:inline-block">
-                                                {automation.is_active ? 'Ativado' : 'Pausado'}
-                                            </span>
-                                        </div>
+                                <div className="flex items-center gap-3 w-full sm:w-auto">
+                                    <div className="flex items-center gap-2 mr-2">
+                                        <Switch
+                                            checked={automation.is_active}
+                                            onCheckedChange={() => toggleStatus(automation)}
+                                            className="scale-90"
+                                        />
+                                        <span className="text-xs font-medium text-muted-foreground w-12">
+                                            {automation.is_active ? 'Ativo' : 'Pausa'}
+                                        </span>
+                                    </div>
 
-                                        <div className="flex items-center gap-1 border-l pl-2 ml-2">
-                                            <Button variant="ghost" size="icon" asChild>
-                                                <Link to={`/automacoes/editar/${automation.id}`}>
-                                                    <Edit2 className="w-4 h-4 text-muted-foreground hover:text-foreground" />
-                                                </Link>
-                                            </Button>
-                                            <Button variant="ghost" size="icon" onClick={() => deleteAutomation(automation.id)}>
-                                                <Trash2 className="w-4 h-4 text-muted-foreground hover:text-destructive" />
-                                            </Button>
-                                        </div>
+                                    <div className="flex items-center gap-1 border-l pl-2 h-6">
+                                        <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
+                                            <Link to={`/automacoes/editar/${automation.id}`}>
+                                                <Edit2 className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground" />
+                                            </Link>
+                                        </Button>
+                                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => deleteAutomation(automation.id)}>
+                                            <Trash2 className="w-3.5 h-3.5 text-muted-foreground hover:text-destructive" />
+                                        </Button>
                                     </div>
                                 </div>
-                            </CardHeader>
-                            <CardContent className="p-4 sm:p-6 pt-0">
-                                <div className="flex items-center gap-2 text-sm mt-2 p-3 bg-muted/30 rounded-lg border border-border/50">
-                                    <Badge variant="outline" className="bg-background">
-                                        Gatilho: {getTriggerLabel(automation.trigger_type)}
+                            </div>
+
+                            {/* Actions Flow Section */}
+                            <div className="px-4 pb-4">
+                                <div className="flex flex-wrap items-center gap-2 text-sm p-2.5 bg-muted/40 rounded-md border border-border/50">
+                                    {/* Trigger Badge */}
+                                    <Badge variant="outline" className="bg-background shadow-xs text-muted-foreground hover:bg-background pr-3">
+                                        <Zap className="w-3 h-3 mr-1.5 text-amber-500 fill-amber-500/20" />
+                                        {getTriggerLabel(automation.trigger_type)}
                                     </Badge>
-                                    <ArrowRight className="w-4 h-4 text-muted-foreground" />
-                                    <span className="text-muted-foreground">
-                                        {automation.actions.length} {automation.actions.length === 1 ? 'ação' : 'ações'}
-                                    </span>
+
+                                    {/* Flow Arrow */}
+                                    <ArrowRight className="w-3 h-3 text-muted-foreground/40" />
+
+                                    {/* Actions List */}
+                                    {automation.actions.map((action, index) => (
+                                        <div key={index} className="flex items-center gap-2">
+                                            <Badge variant="secondary" className="bg-background/80 border shadow-xs text-foreground font-normal">
+                                                <span className="mr-1.5 opacity-80">{getActionIcon(action.type)}</span>
+                                                {getActionLabel(action.type)}
+                                            </Badge>
+                                            {index < automation.actions.length - 1 && (
+                                                <ArrowRight className="w-3 h-3 text-muted-foreground/40" />
+                                            )}
+                                        </div>
+                                    ))}
+
+                                    {automation.actions.length === 0 && (
+                                        <span className="text-xs text-muted-foreground italic ml-1">Sem ações configuradas</span>
+                                    )}
                                 </div>
-                            </CardContent>
+                            </div>
                         </Card>
                     ))}
                 </div>

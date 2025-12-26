@@ -278,6 +278,73 @@ function AutomationListSkeleton() {
     );
 }
 
+// Automation Builder Skeleton
+function AutomationBuilderSkeleton() {
+    return (
+        <div className="space-y-6 animate-in fade-in duration-300">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                        <Skeleton className="h-8 w-8 rounded-md" />
+                        <Skeleton className="h-8 w-48" />
+                    </div>
+                </div>
+                <div className="flex items-center gap-4">
+                    <Skeleton className="h-8 w-24" />
+                    <Skeleton className="h-10 w-24 rounded-md" />
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Left Column */}
+                <div className="space-y-6">
+                    <div className="rounded-lg border bg-card p-6 space-y-4">
+                        <Skeleton className="h-6 w-40" />
+                        <div className="space-y-2">
+                            <Skeleton className="h-4 w-24" />
+                            <Skeleton className="h-10 w-full" />
+                        </div>
+                    </div>
+                    <div className="rounded-lg border bg-card p-6 space-y-4">
+                        <div className="space-y-1">
+                            <Skeleton className="h-6 w-32" />
+                            <Skeleton className="h-4 w-48" />
+                        </div>
+                        <div className="space-y-2">
+                            <Skeleton className="h-4 w-24" />
+                            <Skeleton className="h-10 w-full" />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Right Column */}
+                <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                        <Skeleton className="h-7 w-24" />
+                        <div className="flex gap-2">
+                            <Skeleton className="h-8 w-24 rounded-md" />
+                            <Skeleton className="h-8 w-24 rounded-md" />
+                        </div>
+                    </div>
+                    <div className="space-y-4">
+                        <div className="rounded-lg border bg-card p-6 space-y-4">
+                            <div className="flex justify-between">
+                                <Skeleton className="h-6 w-32" />
+                                <Skeleton className="h-8 w-8 rounded-md" />
+                            </div>
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-24" />
+                                <Skeleton className="h-10 w-full" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export {
     Skeleton,
     MetricCardSkeleton,
@@ -290,4 +357,5 @@ export {
     SettingsPageSkeleton,
     WhatsAppSettingsSkeleton,
     AutomationListSkeleton,
+    AutomationBuilderSkeleton,
 };

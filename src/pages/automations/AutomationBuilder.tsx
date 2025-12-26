@@ -14,6 +14,7 @@ import {
     SelectSeparator,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";  // Removed Separator import
+import { AutomationBuilderSkeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
@@ -297,11 +298,11 @@ export function AutomationBuilder() {
     }
 
     if (loading) {
-        return <div className="p-8 text-center">Carregando...</div>;
+        return <AutomationBuilderSkeleton />;
     }
 
     return (
-        <div className="space-y-6 animate-in fade-in duration-500">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
