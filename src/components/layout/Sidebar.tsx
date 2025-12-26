@@ -269,7 +269,13 @@ export function Sidebar() {
                         </div>
 
                         {/* Days remaining */}
-                        <p className="text-[12px] text-muted-foreground mb-3 ml-7">{trialInfo.daysLeft} dias restantes</p>
+                        <p className="text-[12px] text-muted-foreground mb-3 ml-7 leading-tight">
+                            {trialInfo.daysLeft === 0 ? (
+                                "Último dia de teste"
+                            ) : (
+                                `${trialInfo.daysLeft} ${trialInfo.daysLeft === 1 ? 'dia restante' : 'dias restantes'}`
+                            )}
+                        </p>
 
                         {/* Progress bar with laser effect */}
                         <div className="h-1 w-full bg-border/50 rounded-full overflow-hidden mb-3">
