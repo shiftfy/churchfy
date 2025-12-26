@@ -153,23 +153,49 @@ serve(async (req) => {
             const savedInstanceId = data.instance?.instanceId || data.instance?.id || null
             const savedApiToken = data.hash?.apikey || data.apikey || null
 
-            // Update existing record
-            const { data: updateData, error: dbError } = await adminClient
+            // Check if config exists
+            const { data: existingConfig } = await adminClient
                 .from('whatsapp_configs')
-                .update({
-                    instance_name: savedInstanceName,
-                    instance_id: savedInstanceId,
-                    api_token: savedApiToken,
-                    status: 'created',
-                    updated_at: new Date().toISOString()
-                })
+                .select('id')
                 .eq('organization_id', organizationId)
-                .select()
+                .maybeSingle()
+
+            let dbResult
+
+            if (existingConfig) {
+                // Update existing record
+                dbResult = await adminClient
+                    .from('whatsapp_configs')
+                    .update({
+                        instance_name: savedInstanceName,
+                        instance_id: savedInstanceId,
+                        api_token: savedApiToken,
+                        status: 'created',
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', existingConfig.id)
+                    .select()
+            } else {
+                // Insert new record
+                dbResult = await adminClient
+                    .from('whatsapp_configs')
+                    .insert({
+                        organization_id: organizationId,
+                        instance_name: savedInstanceName,
+                        instance_id: savedInstanceId,
+                        api_token: savedApiToken,
+                        status: 'created',
+                        updated_at: new Date().toISOString()
+                    })
+                    .select()
+            }
+
+            const { data: updateData, error: dbError } = dbResult
 
             if (dbError) {
-                console.error('DB Update Error:', dbError)
+                console.error('DB Update/Insert Error:', dbError)
             } else {
-                console.log('DB Update Success:', updateData)
+                console.log('DB Update/Insert Success:', updateData)
             }
 
             return new Response(JSON.stringify(data), {

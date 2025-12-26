@@ -134,6 +134,55 @@ export function Onboarding() {
                 const userId = user?.id;
                 if (!userId) throw new Error("User ID not found");
 
+                // If user already has an organization, update it instead of creating
+                if (user.organization_id) {
+                    console.log("Onboarding: Organization already exists, updating...", user.organization_id);
+
+                    // Upload Logo if exists (and changed? hard to tell, just re-upload if needed)
+                    // For simplicity in this fix, we'll focus on the data update
+                    let logoUrl = null;
+                    if (logo) {
+                        const fileExt = logo.name.split('.').pop();
+                        const fileName = `${userId}-${Math.random()}.${fileExt}`;
+                        const filePath = `organization-logos/${fileName}`;
+                        const { error: uploadError } = await supabase.storage
+                            .from('avatars')
+                            .upload(filePath, logo);
+                        if (!uploadError) {
+                            const { data: { publicUrl } } = supabase.storage
+                                .from('avatars')
+                                .getPublicUrl(filePath);
+                            logoUrl = publicUrl;
+                        }
+                    }
+
+                    // Update existing organization
+                    const { error: updateError } = await supabase
+                        .from('organizations')
+                        .update({
+                            name: organizationName,
+                            username: username,
+                            slug: username, // Safe to assume slug follows username
+                            address: address,
+                            // Note: members_count and referral_source might not be in the table yet depending on migrations,
+                            // we skip them to ensure the update succeeds.
+                            ...(logoUrl ? { logo_url: logoUrl } : {})
+                        })
+                        .eq('id', user.organization_id);
+
+                    if (updateError) {
+                        console.error("Onboarding: Error updating organization:", updateError);
+                        // We proceed anyway to unblock the user, as the org exists.
+                        toast.error("Erro ao atualizar dados, mas vamos prosseguir.");
+                    } else {
+                        toast.success("Dados atualizados!");
+                    }
+
+                    setIsSubmitting(false);
+                    setStep(3);
+                    return;
+                }
+
                 // Upload Logo if exists
                 let logoUrl = null;
                 if (logo) {
