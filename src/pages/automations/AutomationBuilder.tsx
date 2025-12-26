@@ -248,24 +248,28 @@ export function AutomationBuilder() {
                 updated_at: new Date().toISOString()
             };
 
-            let error;
             if (id) {
                 const { error: updateError } = await supabase
                     .from("automations")
                     .update(payload)
                     .eq("id", id);
-                error = updateError;
+
+                if (updateError) throw updateError;
             } else {
-                const { error: insertError } = await supabase
+                const { data: newAuto, error: insertError } = await supabase
                     .from("automations")
-                    .insert(payload);
-                error = insertError;
+                    .insert(payload)
+                    .select()
+                    .single();
+
+                if (insertError) throw insertError;
+
+                if (newAuto) {
+                    navigate(`/automacoes/${newAuto.id}`);
+                }
             }
 
-            if (error) throw error;
-
             toast.success("Automação salva com sucesso!");
-            navigate("/automacoes");
         } catch (error) {
             console.error("Error saving automation:", error);
             toast.error("Erro ao salvar automação.");
