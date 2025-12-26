@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Save, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Save, Plus, Trash2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,7 @@ import {
     SelectValue,
     SelectSeparator,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";  // Removed Separator import
+import { VariableTextarea } from "@/components/automations/VariableTextarea";
 import { AutomationBuilderSkeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/lib/supabase";
@@ -534,15 +534,26 @@ export function AutomationBuilder() {
                                             {action.type === 'send_whatsapp' && (
                                                 <div className="space-y-2">
                                                     <Label>Mensagem</Label>
-                                                    <Textarea
-                                                        className="min-h-[100px] resize-none"
-                                                        placeholder="Digite a mensagem..."
+                                                    <VariableTextarea
+                                                        className="min-h-[100px]"
+                                                        placeholder="Ex: Olá @nome, tudo bem?"
                                                         value={action.config.message || ""}
-                                                        onChange={(e) => updateActionConfig(action.id, { message: e.target.value })}
+                                                        onChange={(val) => updateActionConfig(action.id, { message: val })}
+                                                        variables={[
+                                                            { key: '@nome', label: 'Nome do Contato' }
+                                                        ]}
                                                     />
-                                                    <p className="text-xs text-muted-foreground">
-                                                        A mensagem será enviada automaticamente para o contato.
-                                                    </p>
+                                                    <div className="mt-2 flex items-start gap-2.5 rounded-md border border-dashed border-border/60 bg-muted/10 p-2.5">
+                                                        <div className="mt-0.5 rounded-md bg-primary/10 p-1 text-primary">
+                                                            <Sparkles className="h-3 w-3" />
+                                                        </div>
+                                                        <div className="space-y-0.5">
+                                                            <p className="text-xs font-medium text-foreground/90">Personalize sua mensagem</p>
+                                                            <p className="text-[11px] text-muted-foreground">
+                                                                Use <code className="mx-0.5 rounded bg-muted px-1 py-0.5 font-mono text-[10px] text-foreground border border-border">@nome</code> para inserir o nome automaticamente.
+                                                            </p>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             )}
                                         </CardContent>
