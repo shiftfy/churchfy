@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Save, Bot, RefreshCw, Smartphone, Trash2, CheckCircle2, Zap, Layout, Play, Sparkles } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SectionTabs } from "@/components/layout/SectionTabs";
 import QRCode from "react-qr-code";
 import { toast } from "sonner";
 import { EvolutionApi } from "@/lib/evolution-api";
@@ -311,10 +312,18 @@ export function WhatsAppSettings() {
     return (
         <div className="space-y-8 animate-in fade-in duration-500 pb-12">
             <div>
-                <h1 className="text-3xl font-bold tracking-tight text-foreground">Configuração WhatsApp</h1>
-                <p className="text-muted-foreground mt-1">
-                    Gerencie a conexão e a inteligência artificial do seu assistente
-                </p>
+                <SectionTabs
+                    items={[
+                        { label: "Automações", href: "/automacoes" },
+                        { label: "WhatsApp", href: "/whatsapp" },
+                    ]}
+                />
+                <div className="mt-4">
+                    <h1 className="text-3xl font-bold tracking-tight text-foreground">WhatsApp</h1>
+                    <p className="text-muted-foreground mt-1">
+                        Gerencie a conexão e a inteligência artificial do seu assistente
+                    </p>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

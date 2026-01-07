@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useBranches } from "@/hooks/useData";
+import { SectionTabs } from "@/components/layout/SectionTabs";
 import { useSubscription } from "@/hooks/useSubscription";
 import type { Branch } from "@/lib/supabase";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -194,7 +195,13 @@ export function Branches() {
             {/* Page Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Filiais</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-foreground mb-4">Minha Igreja</h1>
+                    <SectionTabs
+                        items={[
+                            { label: "Geral", href: "/configuracoes" },
+                            { label: "Filiais", href: "/filiais" },
+                        ]}
+                    />
                     <p className="text-muted-foreground mt-1">Gerencie as filiais da sua organização</p>
                 </div>
                 {canCreateBranches ? (

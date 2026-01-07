@@ -58,45 +58,44 @@ function TableSkeleton() {
     );
 }
 
+import { SectionTabs } from "@/components/layout/SectionTabs";
+
+// ... existing code ...
+
 export function VisitorList() {
     const navigate = useNavigate();
+    const { data: people = [], isLoading, deletePerson, archivePerson } = usePeople();
     const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
 
-    // React Query hook - dados cacheados
-    const {
-        data: people = [],
-        isLoading,
-        deletePerson,
-        archivePerson
-    } = usePeople();
-
-    const handleDeletePerson = async (personId: string) => {
-        await deletePerson.mutateAsync(personId);
-        setSelectedPerson(null);
-    };
-
-    const handleArchivePerson = async (personId: string, isArchived: boolean) => {
-        await archivePerson.mutateAsync({ id: personId, isArchived });
-        if (selectedPerson?.id === personId) {
-            setSelectedPerson({ ...selectedPerson, is_archived: isArchived });
+    const handleDeletePerson = async (id: string) => {
+        if (confirm("Tem certeza que deseja excluir esta pessoa?")) {
+            await deletePerson.mutateAsync(id);
         }
     };
 
+    const handleArchivePerson = async (id: string, isArchived: boolean) => {
+        await archivePerson.mutateAsync({ id, isArchived });
+    };
+
     const getLatestFormTitle = (person: Person) => {
-        if (!person.visitor_responses || person.visitor_responses.length === 0) return "-";
-        const sortedResponses = [...person.visitor_responses].sort((a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
-        return sortedResponses[0].forms?.title || "-";
+        return person.visitor_responses?.[0]?.forms?.title || "Sem resposta";
     };
 
     return (
         <div className="space-y-6 animate-in fade-in duration-300">
-            <div>
-                <h1 className="text-2xl font-bold tracking-tight">Pessoas</h1>
-                <p className="text-muted-foreground">
-                    Lista completa de todas as pessoas cadastradas.
-                </p>
+            <div className="flex flex-col gap-4">
+                <SectionTabs
+                    items={[
+                        { label: "Pessoas", href: "/visitantes/todos" },
+                        { label: "Discipuladores", href: "/discipuladores" },
+                    ]}
+                />
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Pessoas</h1>
+                    <p className="text-muted-foreground mt-1">
+                        Lista completa de todas as pessoas cadastradas.
+                    </p>
+                </div>
             </div>
 
             <div className="border rounded-lg">

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { SectionTabs } from "@/components/layout/SectionTabs";
 import { useForm, useFieldArray, FormProvider } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -152,7 +153,13 @@ export function OrganizationSettings() {
         <div className="space-y-8 animate-in fade-in duration-300 pb-12">
             <div className="flex flex-col gap-6">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Minha Igreja</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-foreground mb-4">Minha Igreja</h1>
+                    <SectionTabs
+                        items={[
+                            { label: "Geral", href: "/configuracoes" },
+                            { label: "Filiais", href: "/filiais" },
+                        ]}
+                    />
                     <p className="text-muted-foreground">
                         Gerencie as informações da sua organização de forma centralizada.
                     </p>

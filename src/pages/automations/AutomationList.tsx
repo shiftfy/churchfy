@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { SectionTabs } from "@/components/layout/SectionTabs";
 import { Plus, GitMerge, ArrowRight, Trash2, Edit2, Zap, MessageSquare, Tag as TagIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
@@ -123,19 +124,29 @@ export function AutomationList() {
 
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div className="flex flex-col gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Automações</h1>
-                    <p className="text-muted-foreground">
-                        Crie fluxos automáticos para engajar seus visitantes e membros.
-                    </p>
+                    <SectionTabs
+                        items={[
+                            { label: "Automações", href: "/automacoes" },
+                            { label: "WhatsApp", href: "/whatsapp" },
+                        ]}
+                    />
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h1 className="text-3xl font-bold tracking-tight text-foreground">Automações</h1>
+                            <p className="text-muted-foreground mt-1">
+                                Crie fluxos automáticos para engajar seus visitantes e membros.
+                            </p>
+                        </div>
+                        <Button asChild>
+                            <Link to="/automacoes/nova">
+                                <Plus className="mr-2 h-4 w-4" />
+                                Nova Automação
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
-                <Button asChild>
-                    <Link to="/automacoes/nova">
-                        <Plus className="mr-2 h-4 w-4" />
-                        Nova Automação
-                    </Link>
-                </Button>
             </div>
 
             {automations.length === 0 ? (

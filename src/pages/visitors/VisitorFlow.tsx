@@ -60,6 +60,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { KanbanColumnSkeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { SectionTabs } from "@/components/layout/SectionTabs";
 
 interface Stage {
     id: string;
@@ -456,17 +457,29 @@ export function VisitorFlow() {
     if (!selectedJourney) {
         return (
             <div className="space-y-6 animate-in fade-in duration-300">
-                <div className="flex items-center justify-between">
+
+                <div className="flex flex-col gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Fluxos</h1>
-                        <p className="text-muted-foreground">
-                            Gerencie os fluxos de acompanhamento da sua igreja.
-                        </p>
+                        <SectionTabs
+                            items={[
+                                { label: "Formulários", href: "/formularios" },
+                                { label: "Fluxos", href: "/engajamento/fluxos" },
+                                { label: "Inputs e Tags", href: "/engajamento/tags" },
+                            ]}
+                        />
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h1 className="text-3xl font-bold tracking-tight text-foreground">Fluxos</h1>
+                                <p className="text-muted-foreground">
+                                    Gerencie os fluxos de acompanhamento da sua igreja.
+                                </p>
+                            </div>
+                            <Button onClick={() => setIsAddingJourney(true)}>
+                                <Plus className="w-4 h-4 mr-2" />
+                                Novo Fluxo
+                            </Button>
+                        </div>
                     </div>
-                    <Button onClick={() => setIsAddingJourney(true)}>
-                        <Plus className="w-4 h-4 mr-2" />
-                        Novo Fluxo
-                    </Button>
                 </div>
 
                 {loading ? (
@@ -571,7 +584,16 @@ export function VisitorFlow() {
     }
 
     return (
-        <div className="h-full flex flex-col">
+        <div className="h-full flex flex-col pt-4">
+            <div className="mb-4">
+                <SectionTabs
+                    items={[
+                        { label: "Formulários", href: "/formularios" },
+                        { label: "Fluxos", href: "/engajamento/fluxos" },
+                        { label: "Inputs e Tags", href: "/engajamento/tags" },
+                    ]}
+                />
+            </div>
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-4">
                     <Button variant="ghost" size="icon" onClick={() => setSelectedJourney(null)}>

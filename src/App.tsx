@@ -60,14 +60,15 @@ function App() {
         <Route path="/visitantes">
           <Route index element={<Navigate to="/visitantes/todos" replace />} />
           <Route path="todos" element={<VisitorList />} />
-          <Route path="fluxo" element={<VisitorFlow />} />
+
         </Route>
         <Route path="/pessoas/:id" element={<PersonProfile />} />
         <Route path="/whatsapp" element={<WhatsAppSettings />} />
         <Route path="/discipuladores" element={<DisciplersList />} />
         <Route path="/filiais" element={<Branches />} />
         <Route path="/configuracoes" element={<OrganizationSettings />} />
-        <Route path="/configuracoes/tags-campos" element={<TagsAndFields />} />
+        <Route path="/engajamento/tags" element={<TagsAndFields />} />
+        <Route path="/engajamento/fluxos" element={<VisitorFlow />} />
         <Route path="/automacoes">
           <Route index element={<AutomationList />} />
           <Route path="nova" element={<AutomationBuilder />} />

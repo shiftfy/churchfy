@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { AddDisciplerDialog } from "@/components/disciplers/AddDisciplerDialog";
+import { SectionTabs } from "@/components/layout/SectionTabs";
 
 interface Discipler {
     id: string;
@@ -80,17 +81,27 @@ export function DisciplersList() {
 
     return (
         <div className="space-y-6 animate-in fade-in duration-300">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Discipuladores</h1>
-                    <p className="text-muted-foreground">
-                        Gerencie os discipuladores da sua igreja.
-                    </p>
+                    <SectionTabs
+                        items={[
+                            { label: "Pessoas", href: "/visitantes/todos" },
+                            { label: "Discipuladores", href: "/discipuladores" },
+                        ]}
+                    />
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-3xl font-bold tracking-tight text-foreground">Discipuladores</h1>
+                            <p className="text-muted-foreground mt-1">
+                                Gerencie os discipuladores da sua igreja.
+                            </p>
+                        </div>
+                        <Button onClick={handleOpenAdd}>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Novo Discipulador
+                        </Button>
+                    </div>
                 </div>
-                <Button onClick={handleOpenAdd}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Novo Discipulador
-                </Button>
             </div>
 
             <div className="border rounded-lg">

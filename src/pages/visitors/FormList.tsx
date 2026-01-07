@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { SectionTabs } from "@/components/layout/SectionTabs";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase";
@@ -175,17 +176,28 @@ export function FormList() {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Formulários</h1>
-                    <p className="text-muted-foreground mt-1">
-                        Crie e gerencie formulários para coleta de dados de visitantes
-                    </p>
+                    <SectionTabs
+                        items={[
+                            { label: "Formulários", href: "/formularios" },
+                            { label: "Fluxos", href: "/engajamento/fluxos" },
+                            { label: "Inputs e Tags", href: "/engajamento/tags" },
+                        ]}
+                    />
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-3xl font-bold tracking-tight text-foreground">Formulários</h1>
+                            <p className="text-muted-foreground mt-1">
+                                Crie e gerencie formulários para coleta de dados de visitantes
+                            </p>
+                        </div>
+                        <Button onClick={() => navigate("/formularios/novo")}>
+                            <Plus className="w-4 h-4 mr-2" />
+                            Novo Formulário
+                        </Button>
+                    </div>
                 </div>
-                <Button onClick={() => navigate("/formularios/novo")}>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Novo Formulário
-                </Button>
             </div>
 
             {forms.length === 0 ? (
