@@ -32,7 +32,7 @@ export function Onboarding() {
     const [source, setSource] = useState("");
 
     // Step 3 & 4 Data (Plan & Payment)
-    const [selectedPlan, setSelectedPlan] = useState<PlanType | null>(null);
+    const [selectedPlan, setSelectedPlan] = useState<PlanType | null>('one');
     const [clientSecret, setClientSecret] = useState<string | null>(null);
 
     // Validation States

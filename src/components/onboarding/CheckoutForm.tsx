@@ -24,6 +24,8 @@ export function CheckoutForm({ plan, onSuccess, onBack }: CheckoutFormProps) {
             return;
         }
 
+        console.log("Processing payment for plan:", plan);
+
         setLoading(true);
         setErrorMessage(null);
 
@@ -63,7 +65,7 @@ export function CheckoutForm({ plan, onSuccess, onBack }: CheckoutFormProps) {
             <div className="text-center mb-6">
                 <h2 className="text-2xl font-bold">Dados do Pagamento</h2>
                 <p className="text-muted-foreground">
-                    Você escolheu o plano <span className="font-semibold text-primary">{plan === 'one' ? 'One' : 'Campus'}</span>.
+                    Você escolheu o plano <span className="font-semibold text-primary">ONE</span>.
                 </p>
                 <div className="mt-2 text-sm bg-green-50 text-green-700 py-1 px-3 rounded-full inline-flex items-center gap-1">
                     <Lock className="w-3 h-3" /> 7 dias • Cancelamento fácil
