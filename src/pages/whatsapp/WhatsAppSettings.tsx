@@ -27,7 +27,6 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { WhatsAppSettingsSkeleton } from "@/components/ui/skeleton";
 
 const whatsappSchema = z.object({
     openai_api_key: z.string().optional(),
@@ -306,246 +305,298 @@ export function WhatsAppSettings() {
     };
 
     if (loading) {
-        return <WhatsAppSettingsSkeleton />;
-    }
-
-    return (
-        <div className="space-y-8 animate-in fade-in duration-500 pb-12">
-            <div>
+        return (
+            <div className="space-y-6 pb-12">
+                {/* Menu - sem animação */}
                 <SectionTabs
                     items={[
                         { label: "Automações", href: "/automacoes" },
                         { label: "WhatsApp", href: "/whatsapp" },
                     ]}
                 />
-                <div className="mt-4">
+
+                {/* Conteúdo - com animação */}
+                <div className="animate-in fade-in duration-300 space-y-8">
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight text-foreground">WhatsApp</h1>
+                        <p className="text-muted-foreground mt-1">
+                            Gerencie a conexão e a inteligência artificial do seu assistente
+                        </p>
+                    </div>
+
+                    {/* Skeleton do conteúdo */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        {/* Coluna esquerda */}
+                        <div className="lg:col-span-2 space-y-6">
+                            <div className="h-12 bg-muted animate-pulse rounded-lg" />
+                            <Card>
+                                <CardContent className="p-6 space-y-4">
+                                    {Array.from({ length: 4 }).map((_, i) => (
+                                        <div key={i} className="space-y-2">
+                                            <div className="h-4 w-32 bg-muted animate-pulse rounded" />
+                                            <div className="h-10 w-full bg-muted animate-pulse rounded-md" />
+                                        </div>
+                                    ))}
+                                </CardContent>
+                            </Card>
+                        </div>
+
+                        {/* Coluna direita */}
+                        <div className="space-y-6">
+                            <Card>
+                                <CardContent className="p-6 space-y-4">
+                                    <div className="h-6 w-40 bg-muted animate-pulse rounded" />
+                                    <div className="h-40 w-40 mx-auto bg-muted animate-pulse rounded-lg" />
+                                    <div className="h-10 w-full bg-muted animate-pulse rounded-md" />
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-6 pb-12">
+            {/* Menu - sem animação */}
+            <SectionTabs
+                items={[
+                    { label: "Automações", href: "/automacoes" },
+                    { label: "WhatsApp", href: "/whatsapp" },
+                ]}
+            />
+
+            {/* Conteúdo - com animação */}
+            <div className="animate-in fade-in duration-300 space-y-8">
+                <div>
                     <h1 className="text-3xl font-bold tracking-tight text-foreground">WhatsApp</h1>
                     <p className="text-muted-foreground mt-1">
                         Gerencie a conexão e a inteligência artificial do seu assistente
                     </p>
                 </div>
-            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Left Column: Tips and Configuration */}
-                <div className="lg:col-span-2 space-y-6">
-                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                        <TabsList className="grid w-full grid-cols-2 mb-4">
-                            <TabsTrigger value="instructions">Instruções</TabsTrigger>
-                            <TabsTrigger value="integration">Integração</TabsTrigger>
-                        </TabsList>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Left Column: Tips and Configuration */}
+                    <div className="lg:col-span-2 space-y-6">
+                        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                            <TabsList className="grid w-full grid-cols-2 mb-4">
+                                <TabsTrigger value="instructions">Instruções</TabsTrigger>
+                                <TabsTrigger value="integration">Integração</TabsTrigger>
+                            </TabsList>
 
-                        {/* INSTRUCTIONS TAB */}
-                        <TabsContent value="instructions" className="space-y-6">
-                            <Card>
-                                <CardHeader>
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                                            <Play className="w-5 h-5" />
+                            {/* INSTRUCTIONS TAB */}
+                            <TabsContent value="instructions" className="space-y-6">
+                                <Card>
+                                    <CardHeader>
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                                                <Play className="w-5 h-5" />
+                                            </div>
+                                            <CardTitle>Como funciona?</CardTitle>
                                         </div>
-                                        <CardTitle>Como funciona?</CardTitle>
+                                        <CardDescription>
+                                            Siga os passos abaixo para ativar seu assistente virtual inteligente.
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent className="space-y-6">
+                                        <div className="grid gap-4 md:grid-cols-3">
+                                            <div className="space-y-2 p-4 border rounded-lg bg-muted/20">
+                                                <div className="flex items-center gap-2 text-green-600 font-medium">
+                                                    <Smartphone className="w-5 h-5" />
+                                                    1. Conectar
+                                                </div>
+                                                <p className="text-sm text-muted-foreground">
+                                                    Escaneie o QR Code na barra lateral para vincular seu WhatsApp ao sistema.
+                                                </p>
+                                            </div>
+                                            <div className="space-y-2 p-4 border rounded-lg bg-muted/20">
+                                                <div className="flex items-center gap-2 text-primary font-medium">
+                                                    <Bot className="w-5 h-5" />
+                                                    2. Configurar IA
+                                                </div>
+                                                <p className="text-sm text-muted-foreground">
+                                                    Na aba "Integração", insira sua chave da OpenAI e configure a personalidade do assistente.
+                                                </p>
+                                            </div>
+                                            <div className="space-y-2 p-4 border rounded-lg bg-muted/20">
+                                                <div className="flex items-center gap-2 text-primary font-medium">
+                                                    <Zap className="w-5 h-5" />
+                                                    3. Pronto!
+                                                </div>
+                                                <p className="text-sm text-muted-foreground">
+                                                    Seu assistente está pronto para interagir com seus visitantes de forma automática.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="relative overflow-hidden rounded-xl border border-primary/20 bg-gradient-to-r from-primary/[0.05] to-transparent p-4 group transition-all hover:bg-primary/[0.08]">
+                                            <div className="flex items-center gap-3 relative">
+                                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                                                    <Sparkles className="h-4 w-4" />
+                                                </div>
+                                                <p className="text-sm text-muted-foreground leading-relaxed">
+                                                    <span className="font-semibold text-primary">Dica Importante:</span> Mantenha seu celular conectado à internet para garantir que o WhatsApp funcione corretamente.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+
+                            {/* INTEGRATION TAB */}
+                            <TabsContent value="integration">
+                                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle className="flex items-center gap-2">
+                                                <Bot className="w-5 h-5 text-primary" />
+                                                Parâmetros da Inteligência Artificial
+                                            </CardTitle>
+                                            <CardDescription>
+                                                Configure como o assistente deve se comportar e processar mensagens.
+                                            </CardDescription>
+                                        </CardHeader>
+                                        <CardContent className="space-y-4">
+                                            <div className="space-y-2">
+                                                <Label htmlFor="openai_api_key">OpenAI API Key</Label>
+                                                <Input
+                                                    id="openai_api_key"
+                                                    type="password"
+                                                    placeholder="sk-..."
+                                                    {...register("openai_api_key")}
+                                                />
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+
+                                    <Card>
+                                        <CardHeader className="pb-4">
+                                            <CardTitle className="text-lg">Configurações de Resposta</CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <div className="flex items-center justify-between space-x-2 border p-4 rounded-lg">
+                                                <div className="space-y-0.5">
+                                                    <Label className="text-base">Resposta Automática</Label>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        Permitir que a IA responda automaticamente às mensagens recebidas.
+                                                    </p>
+                                                </div>
+                                                <Switch
+                                                    checked={watch("is_connected")}
+                                                    onCheckedChange={(checked) => setValue("is_connected", checked)}
+                                                />
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+
+                                    <div className="flex justify-end pt-2">
+                                        <Button type="submit" disabled={saving} size="lg" className="w-full md:w-auto">
+                                            <Save className="w-4 h-4 mr-2" />
+                                            {saving ? "Salvando..." : "Salvar Alterações"}
+                                        </Button>
                                     </div>
-                                    <CardDescription>
-                                        Siga os passos abaixo para ativar seu assistente virtual inteligente.
-                                    </CardDescription>
+                                </form>
+                            </TabsContent>
+                        </Tabs>
+                    </div>
+
+                    {/* Right Column: Sticky Connection Status */}
+                    <div className="lg:col-span-1">
+                        <div className="sticky top-6 space-y-6">
+                            <Card className="transition-all duration-300">
+                                <CardHeader className="bg-muted/50 py-3">
+                                    <CardTitle className="flex items-center text-sm font-semibold">
+                                        <Smartphone className="w-4 h-4 mr-2 text-muted-foreground" />
+                                        Status da Conexão
+                                    </CardTitle>
                                 </CardHeader>
-                                <CardContent className="space-y-6">
-                                    <div className="grid gap-4 md:grid-cols-3">
-                                        <div className="space-y-2 p-4 border rounded-lg bg-muted/20">
-                                            <div className="flex items-center gap-2 text-green-600 font-medium">
-                                                <Smartphone className="w-5 h-5" />
-                                                1. Conectar
-                                            </div>
-                                            <p className="text-sm text-muted-foreground">
-                                                Escaneie o QR Code na barra lateral para vincular seu WhatsApp ao sistema.
-                                            </p>
-                                        </div>
-                                        <div className="space-y-2 p-4 border rounded-lg bg-muted/20">
-                                            <div className="flex items-center gap-2 text-primary font-medium">
-                                                <Bot className="w-5 h-5" />
-                                                2. Configurar IA
-                                            </div>
-                                            <p className="text-sm text-muted-foreground">
-                                                Na aba "Integração", insira sua chave da OpenAI e configure a personalidade do assistente.
-                                            </p>
-                                        </div>
-                                        <div className="space-y-2 p-4 border rounded-lg bg-muted/20">
-                                            <div className="flex items-center gap-2 text-primary font-medium">
-                                                <Zap className="w-5 h-5" />
-                                                3. Pronto!
-                                            </div>
-                                            <p className="text-sm text-muted-foreground">
-                                                Seu assistente está pronto para interagir com seus visitantes de forma automática.
-                                            </p>
+                                <CardContent className="pt-6 flex flex-col items-center text-center space-y-6">
+                                    <div className="relative">
+                                        <div className="w-48 h-48 bg-white p-3 rounded-xl shadow-sm border flex items-center justify-center relative overflow-hidden group">
+                                            {instanceStatus === 'connected' ? (
+                                                <div className="flex flex-col items-center animate-in zoom-in duration-300">
+                                                    <div className="w-16 h-16 bg-green-50 dark:bg-green-900/20 rounded-full flex items-center justify-center mb-3">
+                                                        <CheckCircle2 className="w-8 h-8 text-green-500" />
+                                                    </div>
+                                                    <span className="text-base font-semibold text-foreground">Dispositivo Vinculado</span>
+                                                    <span className="text-sm text-muted-foreground mt-1 text-green-600 font-medium">Pronto para uso</span>
+                                                </div>
+                                            ) : qrCode ? (
+                                                <div className="w-full h-full flex items-center justify-center animate-in fade-in">
+                                                    {qrCode.startsWith('data:image') ? (
+                                                        <img src={qrCode} alt="QR Code" className="max-w-full max-h-full object-contain" />
+                                                    ) : (
+                                                        <QRCode
+                                                            size={256}
+                                                            style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                                                            value={qrCode}
+                                                            viewBox={`0 0 256 256`}
+                                                        />
+                                                    )}
+                                                    {/* Scan overlay effect */}
+                                                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/10 to-transparent h-full w-full -translate-y-full group-hover:translate-y-full transition-transform duration-1000 ease-in-out" />
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-col items-center opacity-40">
+                                                    <Smartphone className="w-12 h-12 mb-2" />
+                                                    <span className="text-xs">Aguardando conexão...</span>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 
-                                    <div className="relative overflow-hidden rounded-xl border border-primary/20 bg-gradient-to-r from-primary/[0.05] to-transparent p-4 group transition-all hover:bg-primary/[0.08]">
-                                        <div className="flex items-center gap-3 relative">
-                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                                                <Sparkles className="h-4 w-4" />
-                                            </div>
-                                            <p className="text-sm text-muted-foreground leading-relaxed">
-                                                <span className="font-semibold text-primary">Dica Importante:</span> Mantenha seu celular conectado à internet para garantir que o WhatsApp funcione corretamente.
-                                            </p>
-                                        </div>
+                                    <div className="space-y-2 w-full">
+                                        {instanceStatus === 'connected' ? (
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <Button variant="ghost" className="w-full text-muted-foreground hover:text-destructive transition-colors">
+                                                        <Trash2 className="w-3.5 h-3.5 mr-2" />
+                                                        Desvincular Dispositivo
+                                                    </Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>Desconectar WhatsApp?</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            Isso irá interromper o assistente. Você precisará escanear o QR Code novamente.
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                        <AlertDialogAction onClick={handleDisconnect} className="bg-destructive hover:bg-destructive/90 text-white">
+                                                            Sim, desconectar
+                                                        </AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
+                                        ) : (
+                                            <Button
+                                                onClick={handleConnect}
+                                                disabled={connecting}
+                                                className="w-full bg-green-600 hover:bg-green-700 text-white"
+                                            >
+                                                {connecting ? (
+                                                    <>
+                                                        <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                                                        Gerando...
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Layout className="w-4 h-4 mr-2" />
+                                                        Gerar QR Code
+                                                    </>
+                                                )}
+                                            </Button>
+                                        )}
+
+                                        <p className="text-xs text-muted-foreground px-2">
+                                            {instanceStatus === 'connected' ? "Conectado e operando." : "Gere um QR Code para vincular."}
+                                        </p>
                                     </div>
                                 </CardContent>
                             </Card>
-                        </TabsContent>
-
-                        {/* INTEGRATION TAB */}
-                        <TabsContent value="integration">
-                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle className="flex items-center gap-2">
-                                            <Bot className="w-5 h-5 text-primary" />
-                                            Parâmetros da Inteligência Artificial
-                                        </CardTitle>
-                                        <CardDescription>
-                                            Configure como o assistente deve se comportar e processar mensagens.
-                                        </CardDescription>
-                                    </CardHeader>
-                                    <CardContent className="space-y-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="openai_api_key">OpenAI API Key</Label>
-                                            <Input
-                                                id="openai_api_key"
-                                                type="password"
-                                                placeholder="sk-..."
-                                                {...register("openai_api_key")}
-                                            />
-                                        </div>
-                                    </CardContent>
-                                </Card>
-
-                                <Card>
-                                    <CardHeader className="pb-4">
-                                        <CardTitle className="text-lg">Configurações de Resposta</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="flex items-center justify-between space-x-2 border p-4 rounded-lg">
-                                            <div className="space-y-0.5">
-                                                <Label className="text-base">Resposta Automática</Label>
-                                                <p className="text-sm text-muted-foreground">
-                                                    Permitir que a IA responda automaticamente às mensagens recebidas.
-                                                </p>
-                                            </div>
-                                            <Switch
-                                                checked={watch("is_connected")}
-                                                onCheckedChange={(checked) => setValue("is_connected", checked)}
-                                            />
-                                        </div>
-                                    </CardContent>
-                                </Card>
-
-                                <div className="flex justify-end pt-2">
-                                    <Button type="submit" disabled={saving} size="lg" className="w-full md:w-auto">
-                                        <Save className="w-4 h-4 mr-2" />
-                                        {saving ? "Salvando..." : "Salvar Alterações"}
-                                    </Button>
-                                </div>
-                            </form>
-                        </TabsContent>
-                    </Tabs>
-                </div>
-
-                {/* Right Column: Sticky Connection Status */}
-                <div className="lg:col-span-1">
-                    <div className="sticky top-6 space-y-6">
-                        <Card className="transition-all duration-300">
-                            <CardHeader className="bg-muted/50 py-3">
-                                <CardTitle className="flex items-center text-sm font-semibold">
-                                    <Smartphone className="w-4 h-4 mr-2 text-muted-foreground" />
-                                    Status da Conexão
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="pt-6 flex flex-col items-center text-center space-y-6">
-                                <div className="relative">
-                                    <div className="w-48 h-48 bg-white p-3 rounded-xl shadow-sm border flex items-center justify-center relative overflow-hidden group">
-                                        {instanceStatus === 'connected' ? (
-                                            <div className="flex flex-col items-center animate-in zoom-in duration-300">
-                                                <div className="w-16 h-16 bg-green-50 dark:bg-green-900/20 rounded-full flex items-center justify-center mb-3">
-                                                    <CheckCircle2 className="w-8 h-8 text-green-500" />
-                                                </div>
-                                                <span className="text-base font-semibold text-foreground">Dispositivo Vinculado</span>
-                                                <span className="text-sm text-muted-foreground mt-1 text-green-600 font-medium">Pronto para uso</span>
-                                            </div>
-                                        ) : qrCode ? (
-                                            <div className="w-full h-full flex items-center justify-center animate-in fade-in">
-                                                {qrCode.startsWith('data:image') ? (
-                                                    <img src={qrCode} alt="QR Code" className="max-w-full max-h-full object-contain" />
-                                                ) : (
-                                                    <QRCode
-                                                        size={256}
-                                                        style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                                                        value={qrCode}
-                                                        viewBox={`0 0 256 256`}
-                                                    />
-                                                )}
-                                                {/* Scan overlay effect */}
-                                                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/10 to-transparent h-full w-full -translate-y-full group-hover:translate-y-full transition-transform duration-1000 ease-in-out" />
-                                            </div>
-                                        ) : (
-                                            <div className="flex flex-col items-center opacity-40">
-                                                <Smartphone className="w-12 h-12 mb-2" />
-                                                <span className="text-xs">Aguardando conexão...</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2 w-full">
-                                    {instanceStatus === 'connected' ? (
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <Button variant="ghost" className="w-full text-muted-foreground hover:text-destructive transition-colors">
-                                                    <Trash2 className="w-3.5 h-3.5 mr-2" />
-                                                    Desvincular Dispositivo
-                                                </Button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>Desconectar WhatsApp?</AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                        Isso irá interromper o assistente. Você precisará escanear o QR Code novamente.
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                                    <AlertDialogAction onClick={handleDisconnect} className="bg-destructive hover:bg-destructive/90 text-white">
-                                                        Sim, desconectar
-                                                    </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
-                                    ) : (
-                                        <Button
-                                            onClick={handleConnect}
-                                            disabled={connecting}
-                                            className="w-full bg-green-600 hover:bg-green-700 text-white"
-                                        >
-                                            {connecting ? (
-                                                <>
-                                                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                                                    Gerando...
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Layout className="w-4 h-4 mr-2" />
-                                                    Gerar QR Code
-                                                </>
-                                            )}
-                                        </Button>
-                                    )}
-
-                                    <p className="text-xs text-muted-foreground px-2">
-                                        {instanceStatus === 'connected' ? "Conectado e operando." : "Gere um QR Code para vincular."}
-                                    </p>
-                                </div>
-                            </CardContent>
-                        </Card>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -181,7 +181,38 @@ export function TagManager() {
     };
 
     if (loading) {
-        return <div className="flex justify-center p-8"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>;
+        return (
+            <div className="space-y-4 animate-in fade-in duration-300">
+                <div className="flex justify-end">
+                    <div className="h-10 w-28 bg-muted animate-pulse rounded-md" />
+                </div>
+                <div className="border rounded-md">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Tag</TableHead>
+                                <TableHead className="w-[100px] text-right">Ações</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {Array.from({ length: 5 }).map((_, i) => (
+                                <TableRow key={i}>
+                                    <TableCell>
+                                        <div className="h-6 w-24 bg-muted animate-pulse rounded-full" />
+                                    </TableCell>
+                                    <TableCell className="text-right">
+                                        <div className="flex items-center justify-end gap-2">
+                                            <div className="h-8 w-8 bg-muted animate-pulse rounded-md" />
+                                            <div className="h-8 w-8 bg-muted animate-pulse rounded-md" />
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -221,8 +252,8 @@ export function TagManager() {
                                             type="button"
                                             onClick={() => setTagColor(color)}
                                             className={`w-6 h-6 rounded-full border transition-all ${tagColor === color
-                                                    ? "ring-2 ring-primary ring-offset-2 scale-110"
-                                                    : "hover:scale-110"
+                                                ? "ring-2 ring-primary ring-offset-2 scale-110"
+                                                : "hover:scale-110"
                                                 }`}
                                             style={{ backgroundColor: color }}
                                         />

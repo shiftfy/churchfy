@@ -191,213 +191,218 @@ export function Branches() {
     };
 
     return (
-        <div className="space-y-6 animate-in fade-in duration-300">
-            {/* Page Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground mb-4">Minha Igreja</h1>
-                    <SectionTabs
-                        items={[
-                            { label: "Geral", href: "/configuracoes" },
-                            { label: "Filiais", href: "/filiais" },
-                        ]}
-                    />
-                    <p className="text-muted-foreground mt-1">Gerencie as filiais da sua organização</p>
-                </div>
-                {canCreateBranches ? (
-                    <Button onClick={() => handleOpenDialog()}>
-                        <Plus className="w-4 h-4 mr-2" />
-                        Nova Filial
-                    </Button>
-                ) : (
-                    <Button variant="outline" disabled className="opacity-70 cursor-not-allowed">
-                        <Lock className="w-4 h-4 mr-2" />
-                        Upgrade Necessário
-                    </Button>
-                )}
-            </div>
+        <div className="space-y-6">
+            {/* Menu - sem animação */}
+            <SectionTabs
+                items={[
+                    { label: "Geral", href: "/configuracoes" },
+                    { label: "Filiais", href: "/filiais" },
+                ]}
+            />
 
-            {/* Branches Table */}
-            {isLoading ? (
-                <Card>
-                    <CardHeader>
-                        <Skeleton className="h-6 w-40" />
-                        <Skeleton className="h-4 w-64 mt-2" />
-                    </CardHeader>
-                    <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Nome</TableHead>
-                                    <TableHead>Endereço</TableHead>
-                                    <TableHead>Telefone</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead className="text-right">Ações</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                <BranchTableSkeleton />
-                            </TableBody>
-                        </Table>
-                    </CardContent>
-                </Card>
-            ) : branches.length === 0 ? (
-                <Card>
-                    <CardContent className="flex flex-col items-center justify-center py-12">
-                        <MapPin className="w-12 h-12 text-muted-foreground mb-4" />
-                        <h3 className="text-lg font-medium mb-2">Nenhuma filial cadastrada</h3>
-                        <p className="text-muted-foreground text-sm mb-4">
-                            Comece criando sua primeira filial
-                        </p>
+            {/* Conteúdo - com animação */}
+            <div className="animate-in fade-in duration-300 space-y-6">
+                {/* Page Header */}
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight text-foreground">Minha Igreja - Filiais</h1>
+                        <p className="text-muted-foreground mt-1">Gerencie as filiais da sua organização</p>
+                    </div>
+                    {canCreateBranches ? (
                         <Button onClick={() => handleOpenDialog()}>
                             <Plus className="w-4 h-4 mr-2" />
-                            Criar Primeira Filial
+                            Nova Filial
                         </Button>
-                    </CardContent>
-                </Card>
-            ) : (
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Lista de Filiais ({branches.length})</CardTitle>
-                        <CardDescription>Visualize e gerencie todas as filiais cadastradas</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Nome</TableHead>
-                                    <TableHead>Endereço</TableHead>
-                                    <TableHead>Telefone</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead className="text-right">Ações</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {branches.map((branch: Branch) => (
-                                    <TableRow key={branch.id}>
-                                        <TableCell className="font-medium">{branch.name}</TableCell>
-                                        <TableCell>{branch.address || "-"}</TableCell>
-                                        <TableCell>{branch.phone || "-"}</TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center gap-2">
-                                                <Switch
-                                                    checked={branch.is_active}
-                                                    onCheckedChange={() => toggleBranchStatus(branch)}
-                                                />
-                                                <span className="text-sm">
-                                                    {branch.is_active ? "Ativa" : "Inativa"}
-                                                </span>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={() => handleOpenDialog(branch)}
-                                                >
-                                                    <Pencil className="w-4 h-4" />
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={() => {
-                                                        setBranchToDelete(branch);
-                                                        setDeleteDialogOpen(true);
-                                                    }}
-                                                >
-                                                    <Trash2 className="w-4 h-4 text-destructive" />
-                                                </Button>
-                                            </div>
-                                        </TableCell>
+                    ) : (
+                        <Button variant="outline" disabled className="opacity-70 cursor-not-allowed">
+                            <Lock className="w-4 h-4 mr-2" />
+                            Upgrade Necessário
+                        </Button>
+                    )}
+                </div>
+
+                {/* Branches Table */}
+                {isLoading ? (
+                    <Card>
+                        <CardHeader>
+                            <Skeleton className="h-6 w-40" />
+                            <Skeleton className="h-4 w-64 mt-2" />
+                        </CardHeader>
+                        <CardContent>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Nome</TableHead>
+                                        <TableHead>Endereço</TableHead>
+                                        <TableHead>Telefone</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead className="text-right">Ações</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </CardContent>
-                </Card>
-            )}
+                                </TableHeader>
+                                <TableBody>
+                                    <BranchTableSkeleton />
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
+                ) : branches.length === 0 ? (
+                    <Card>
+                        <CardContent className="flex flex-col items-center justify-center py-12">
+                            <MapPin className="w-12 h-12 text-muted-foreground mb-4" />
+                            <h3 className="text-lg font-medium mb-2">Nenhuma filial cadastrada</h3>
+                            <p className="text-muted-foreground text-sm mb-4">
+                                Comece criando sua primeira filial
+                            </p>
+                            <Button onClick={() => handleOpenDialog()}>
+                                <Plus className="w-4 h-4 mr-2" />
+                                Criar Primeira Filial
+                            </Button>
+                        </CardContent>
+                    </Card>
+                ) : (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Lista de Filiais ({branches.length})</CardTitle>
+                            <CardDescription>Visualize e gerencie todas as filiais cadastradas</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Nome</TableHead>
+                                        <TableHead>Endereço</TableHead>
+                                        <TableHead>Telefone</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead className="text-right">Ações</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {branches.map((branch: Branch) => (
+                                        <TableRow key={branch.id}>
+                                            <TableCell className="font-medium">{branch.name}</TableCell>
+                                            <TableCell>{branch.address || "-"}</TableCell>
+                                            <TableCell>{branch.phone || "-"}</TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center gap-2">
+                                                    <Switch
+                                                        checked={branch.is_active}
+                                                        onCheckedChange={() => toggleBranchStatus(branch)}
+                                                    />
+                                                    <span className="text-sm">
+                                                        {branch.is_active ? "Ativa" : "Inativa"}
+                                                    </span>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <div className="flex items-center justify-end gap-2">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() => handleOpenDialog(branch)}
+                                                    >
+                                                        <Pencil className="w-4 h-4" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() => {
+                                                            setBranchToDelete(branch);
+                                                            setDeleteDialogOpen(true);
+                                                        }}
+                                                    >
+                                                        <Trash2 className="w-4 h-4 text-destructive" />
+                                                    </Button>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
+                )}
 
-            {/* Create/Edit Dialog */}
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>{editingBranch ? "Editar Filial" : "Nova Filial"}</DialogTitle>
-                        <DialogDescription>
-                            {editingBranch
-                                ? "Atualize as informações da filial"
-                                : "Preencha os dados da nova filial"}
-                        </DialogDescription>
-                    </DialogHeader>
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="name">Nome da Filial *</Label>
-                            <Input
-                                id="name"
-                                {...register("name")}
-                                onChange={handleNameChange}
-                                placeholder="Ex: Filial Centro"
-                            />
-                            {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
-                        </div>
+                {/* Create/Edit Dialog */}
+                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>{editingBranch ? "Editar Filial" : "Nova Filial"}</DialogTitle>
+                            <DialogDescription>
+                                {editingBranch
+                                    ? "Atualize as informações da filial"
+                                    : "Preencha os dados da nova filial"}
+                            </DialogDescription>
+                        </DialogHeader>
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="name">Nome da Filial *</Label>
+                                <Input
+                                    id="name"
+                                    {...register("name")}
+                                    onChange={handleNameChange}
+                                    placeholder="Ex: Filial Centro"
+                                />
+                                {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
+                            </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="slug">Slug *</Label>
-                            <Input id="slug" {...register("slug")} placeholder="filial-centro" />
-                            {errors.slug && <p className="text-sm text-destructive">{errors.slug.message}</p>}
-                        </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="slug">Slug *</Label>
+                                <Input id="slug" {...register("slug")} placeholder="filial-centro" />
+                                {errors.slug && <p className="text-sm text-destructive">{errors.slug.message}</p>}
+                            </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="address">Endereço</Label>
-                            <Input id="address" {...register("address")} placeholder="Rua, Número, Bairro" />
-                        </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="address">Endereço</Label>
+                                <Input id="address" {...register("address")} placeholder="Rua, Número, Bairro" />
+                            </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="phone">Telefone</Label>
-                            <Input id="phone" {...register("phone")} placeholder="(00) 00000-0000" />
-                        </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="phone">Telefone</Label>
+                                <Input id="phone" {...register("phone")} placeholder="(00) 00000-0000" />
+                            </div>
 
-                        <div className="flex items-center space-x-2">
-                            <Switch
-                                id="is_active"
-                                checked={isActive}
-                                onCheckedChange={(checked) => setValue("is_active", checked)}
-                            />
-                            <Label htmlFor="is_active">Filial ativa</Label>
-                        </div>
+                            <div className="flex items-center space-x-2">
+                                <Switch
+                                    id="is_active"
+                                    checked={isActive}
+                                    onCheckedChange={(checked) => setValue("is_active", checked)}
+                                />
+                                <Label htmlFor="is_active">Filial ativa</Label>
+                            </div>
 
+                            <DialogFooter>
+                                <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
+                                    Cancelar
+                                </Button>
+                                <Button type="submit" disabled={isSubmitting}>
+                                    {isSubmitting ? "Salvando..." : editingBranch ? "Atualizar" : "Criar"}
+                                </Button>
+                            </DialogFooter>
+                        </form>
+                    </DialogContent>
+                </Dialog>
+
+                {/* Delete Confirmation Dialog */}
+                <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Excluir Filial</DialogTitle>
+                            <DialogDescription>
+                                Tem certeza que deseja excluir a filial <strong>{branchToDelete?.name}</strong>? Esta
+                                ação não pode ser desfeita.
+                            </DialogDescription>
+                        </DialogHeader>
                         <DialogFooter>
-                            <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
+                            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
                                 Cancelar
                             </Button>
-                            <Button type="submit" disabled={isSubmitting}>
-                                {isSubmitting ? "Salvando..." : editingBranch ? "Atualizar" : "Criar"}
+                            <Button variant="destructive" onClick={handleDelete}>
+                                Excluir
                             </Button>
                         </DialogFooter>
-                    </form>
-                </DialogContent>
-            </Dialog>
-
-            {/* Delete Confirmation Dialog */}
-            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Excluir Filial</DialogTitle>
-                        <DialogDescription>
-                            Tem certeza que deseja excluir a filial <strong>{branchToDelete?.name}</strong>? Esta
-                            ação não pode ser desfeita.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
-                            Cancelar
-                        </Button>
-                        <Button variant="destructive" onClick={handleDelete}>
-                            Excluir
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+                    </DialogContent>
+                </Dialog>
+            </div>
         </div>
     );
 }

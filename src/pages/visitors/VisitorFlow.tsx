@@ -456,129 +456,129 @@ export function VisitorFlow() {
 
     if (!selectedJourney) {
         return (
-            <div className="space-y-6 animate-in fade-in duration-300">
+            <div className="space-y-6">
+                {/* Menu - sem animação */}
+                <SectionTabs
+                    items={[
+                        { label: "Formulários", href: "/formularios" },
+                        { label: "Fluxos", href: "/engajamento/fluxos" },
+                        { label: "Inputs e Tags", href: "/engajamento/tags" },
+                    ]}
+                />
 
-                <div className="flex flex-col gap-4">
-                    <div>
-                        <SectionTabs
-                            items={[
-                                { label: "Formulários", href: "/formularios" },
-                                { label: "Fluxos", href: "/engajamento/fluxos" },
-                                { label: "Inputs e Tags", href: "/engajamento/tags" },
-                            ]}
-                        />
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <h1 className="text-3xl font-bold tracking-tight text-foreground">Fluxos</h1>
-                                <p className="text-muted-foreground">
-                                    Gerencie os fluxos de acompanhamento da sua igreja.
-                                </p>
-                            </div>
-                            <Button onClick={() => setIsAddingJourney(true)}>
-                                <Plus className="w-4 h-4 mr-2" />
-                                Novo Fluxo
-                            </Button>
+                {/* Conteúdo - com animação */}
+                <div className="animate-in fade-in duration-300 space-y-6">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-3xl font-bold tracking-tight text-foreground">Fluxos</h1>
+                            <p className="text-muted-foreground">
+                                Gerencie os fluxos de acompanhamento da sua igreja.
+                            </p>
                         </div>
+                        <Button onClick={() => setIsAddingJourney(true)}>
+                            <Plus className="w-4 h-4 mr-2" />
+                            Novo Fluxo
+                        </Button>
                     </div>
-                </div>
 
-                {loading ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {Array.from({ length: 6 }).map((_, i) => (
-                            <Card key={i}>
-                                <CardHeader>
-                                    <div className="flex items-center justify-between">
-                                        <div className="h-6 w-32 bg-muted animate-pulse rounded-md" />
-                                        <div className="h-5 w-5 bg-muted animate-pulse rounded-full" />
-                                    </div>
-                                    <div className="h-4 w-48 bg-muted animate-pulse rounded-md mt-2" />
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="h-4 w-40 bg-muted animate-pulse rounded" />
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {journeys.map((journey) => (
-                            <Card
-                                key={journey.id}
-                                className="cursor-pointer hover:border-primary/50 transition-colors group"
-                                onClick={() => setSelectedJourney(journey)}
-                            >
-                                <CardHeader>
-                                    <CardTitle className="flex items-center justify-between">
-                                        {journey.title}
-                                        <Map className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                                    </CardTitle>
-                                    <CardDescription>{journey.description || "Sem descrição"}</CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-sm text-muted-foreground">
-                                        Clique para visualizar o fluxo
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))}
+                    {loading ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {Array.from({ length: 6 }).map((_, i) => (
+                                <Card key={i}>
+                                    <CardHeader>
+                                        <div className="flex items-center justify-between">
+                                            <div className="h-6 w-32 bg-muted animate-pulse rounded-md" />
+                                            <div className="h-5 w-5 bg-muted animate-pulse rounded-full" />
+                                        </div>
+                                        <div className="h-4 w-48 bg-muted animate-pulse rounded-md mt-2" />
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="h-4 w-40 bg-muted animate-pulse rounded" />
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {journeys.map((journey) => (
+                                <Card
+                                    key={journey.id}
+                                    className="cursor-pointer hover:border-primary/50 transition-colors group"
+                                    onClick={() => setSelectedJourney(journey)}
+                                >
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center justify-between">
+                                            {journey.title}
+                                            <Map className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                                        </CardTitle>
+                                        <CardDescription>{journey.description || "Sem descrição"}</CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="text-sm text-muted-foreground">
+                                            Clique para visualizar o fluxo
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
 
-                        {journeys.length === 0 && (
-                            <div className="col-span-full flex flex-col items-center justify-center py-12 text-center border-2 border-dashed rounded-lg">
-                                <Map className="w-12 h-12 text-muted-foreground mb-4 opacity-50" />
-                                <h3 className="text-lg font-medium mb-2">Nenhum fluxo encontrado</h3>
-                                <p className="text-muted-foreground mb-4">
-                                    Crie seu primeiro fluxo para começar a organizar as pessoas.
-                                </p>
-                                <Button onClick={() => setIsAddingJourney(true)}>
-                                    <Plus className="w-4 h-4 mr-2" />
-                                    Criar Primeiro Fluxo
+                            {journeys.length === 0 && (
+                                <div className="col-span-full flex flex-col items-center justify-center py-12 text-center border-2 border-dashed rounded-lg">
+                                    <Map className="w-12 h-12 text-muted-foreground mb-4 opacity-50" />
+                                    <h3 className="text-lg font-medium mb-2">Nenhum fluxo encontrado</h3>
+                                    <p className="text-muted-foreground mb-4">
+                                        Crie seu primeiro fluxo para começar a organizar as pessoas.
+                                    </p>
+                                    <Button onClick={() => setIsAddingJourney(true)}>
+                                        <Plus className="w-4 h-4 mr-2" />
+                                        Criar Primeiro Fluxo
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    <Dialog open={isAddingJourney} onOpenChange={setIsAddingJourney}>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Novo Fluxo</DialogTitle>
+                                <DialogDescription>
+                                    Crie um novo fluxo de acompanhamento (ex: Visitantes, Batismo, Membresia).
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4 py-4">
+                                <div className="space-y-2">
+                                    <Label>Nome do Fluxo</Label>
+                                    <Input
+                                        value={newJourneyTitle}
+                                        onChange={(e) => setNewJourneyTitle(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && newJourneyTitle.trim()) {
+                                                handleCreateJourney();
+                                            }
+                                        }}
+                                        placeholder="Ex: Jovens"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Descrição (Opcional)</Label>
+                                    <Textarea
+                                        value={newJourneyDescription}
+                                        onChange={(e) => setNewJourneyDescription(e.target.value)}
+                                        placeholder="Descrição breve sobre este fluxo"
+                                    />
+                                </div>
+                            </div>
+                            <DialogFooter>
+                                <Button variant="outline" onClick={() => setIsAddingJourney(false)}>
+                                    Cancelar
                                 </Button>
-                            </div>
-                        )}
-                    </div>
-                )}
-
-                <Dialog open={isAddingJourney} onOpenChange={setIsAddingJourney}>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Novo Fluxo</DialogTitle>
-                            <DialogDescription>
-                                Crie um novo fluxo de acompanhamento (ex: Visitantes, Batismo, Membresia).
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-4 py-4">
-                            <div className="space-y-2">
-                                <Label>Nome do Fluxo</Label>
-                                <Input
-                                    value={newJourneyTitle}
-                                    onChange={(e) => setNewJourneyTitle(e.target.value)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' && newJourneyTitle.trim()) {
-                                            handleCreateJourney();
-                                        }
-                                    }}
-                                    placeholder="Ex: Jovens"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Descrição (Opcional)</Label>
-                                <Textarea
-                                    value={newJourneyDescription}
-                                    onChange={(e) => setNewJourneyDescription(e.target.value)}
-                                    placeholder="Descrição breve sobre este fluxo"
-                                />
-                            </div>
-                        </div>
-                        <DialogFooter>
-                            <Button variant="outline" onClick={() => setIsAddingJourney(false)}>
-                                Cancelar
-                            </Button>
-                            <Button onClick={handleCreateJourney} disabled={!newJourneyTitle.trim()}>
-                                Criar Fluxo
-                            </Button>
-                        </DialogFooter>
-                    </DialogContent>
-                </Dialog>
+                                <Button onClick={handleCreateJourney} disabled={!newJourneyTitle.trim()}>
+                                    Criar Fluxo
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                </div>
             </div>
         );
     }

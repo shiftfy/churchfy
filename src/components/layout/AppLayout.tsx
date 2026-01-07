@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { Sidebar } from "./Sidebar";
-import { useLocation } from "react-router-dom";
 import { SidebarProvider, useSidebar } from "@/contexts/SidebarContext";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
@@ -10,7 +9,6 @@ interface AppLayoutProps {
 }
 
 function AppLayoutContent({ children }: AppLayoutProps) {
-    const location = useLocation();
     const { isCollapsed } = useSidebar();
 
     return (
@@ -25,7 +23,7 @@ function AppLayoutContent({ children }: AppLayoutProps) {
                 )}
             >
                 <div className="mt-4 min-h-[calc(100vh-1rem)] bg-background rounded-tl-3xl shadow-2xl">
-                    <div key={location.pathname} className="p-8 max-w-[1600px] mx-auto animate-page-enter">
+                    <div className="p-8 max-w-[1600px] mx-auto">
                         {children}
                     </div>
                 </div>

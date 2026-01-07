@@ -80,75 +80,76 @@ export function DisciplersList() {
     };
 
     return (
-        <div className="space-y-6 animate-in fade-in duration-300">
-            <div className="flex flex-col gap-4">
-                <div>
-                    <SectionTabs
-                        items={[
-                            { label: "Pessoas", href: "/visitantes/todos" },
-                            { label: "Discipuladores", href: "/discipuladores" },
-                        ]}
-                    />
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h1 className="text-3xl font-bold tracking-tight text-foreground">Discipuladores</h1>
-                            <p className="text-muted-foreground mt-1">
-                                Gerencie os discipuladores da sua igreja.
-                            </p>
-                        </div>
-                        <Button onClick={handleOpenAdd}>
-                            <Plus className="mr-2 h-4 w-4" />
-                            Novo Discipulador
-                        </Button>
-                    </div>
-                </div>
-            </div>
-
-            <div className="border rounded-lg">
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Nome</TableHead>
-                            <TableHead>Idade</TableHead>
-                            <TableHead>Discípulos</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {isLoading ? (
-                            <TableSkeleton />
-                        ) : disciplers.length === 0 ? (
-                            <TableRow className="hover:bg-transparent">
-                                <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
-                                    Nenhum discipulador encontrado.
-                                </TableCell>
-                            </TableRow>
-                        ) : (
-                            disciplers.map((discipler: Discipler) => (
-                                <TableRow
-                                    key={discipler.id}
-                                    className="hover:bg-muted/50 transition-colors cursor-pointer"
-                                    onClick={() => handleRowClick(discipler)}
-                                >
-                                    <TableCell className="font-medium">
-                                        {discipler.name}
-                                    </TableCell>
-                                    <TableCell>
-                                        {calculateAge(discipler.birth_date)}
-                                    </TableCell>
-                                    <TableCell>{discipler.disciples_count || 0}</TableCell>
-                                </TableRow>
-                            ))
-                        )}
-                    </TableBody>
-                </Table>
-            </div>
-
-            <AddDisciplerDialog
-                open={dialogOpen}
-                onOpenChange={setDialogOpen}
-                onSuccess={handleSuccess}
-                editingDiscipler={selectedDiscipler}
+        <div className="space-y-6">
+            {/* Menu - sem animação */}
+            <SectionTabs
+                items={[
+                    { label: "Pessoas", href: "/visitantes/todos" },
+                    { label: "Discipuladores", href: "/discipuladores" },
+                ]}
             />
+
+            {/* Conteúdo - com animação */}
+            <div className="animate-in fade-in duration-300 space-y-6">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight text-foreground">Discipuladores</h1>
+                        <p className="text-muted-foreground mt-1">
+                            Gerencie os discipuladores da sua igreja.
+                        </p>
+                    </div>
+                    <Button onClick={handleOpenAdd}>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Novo Discipulador
+                    </Button>
+                </div>
+
+                <div className="border rounded-lg">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Nome</TableHead>
+                                <TableHead>Idade</TableHead>
+                                <TableHead>Discípulos</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {isLoading ? (
+                                <TableSkeleton />
+                            ) : disciplers.length === 0 ? (
+                                <TableRow className="hover:bg-transparent">
+                                    <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
+                                        Nenhum discipulador encontrado.
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                disciplers.map((discipler: Discipler) => (
+                                    <TableRow
+                                        key={discipler.id}
+                                        className="hover:bg-muted/50 transition-colors cursor-pointer"
+                                        onClick={() => handleRowClick(discipler)}
+                                    >
+                                        <TableCell className="font-medium">
+                                            {discipler.name}
+                                        </TableCell>
+                                        <TableCell>
+                                            {calculateAge(discipler.birth_date)}
+                                        </TableCell>
+                                        <TableCell>{discipler.disciples_count || 0}</TableCell>
+                                    </TableRow>
+                                ))
+                            )}
+                        </TableBody>
+                    </Table>
+                </div>
+
+                <AddDisciplerDialog
+                    open={dialogOpen}
+                    onOpenChange={setDialogOpen}
+                    onSuccess={handleSuccess}
+                    editingDiscipler={selectedDiscipler}
+                />
+            </div>
         </div>
     );
 }

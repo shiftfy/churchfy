@@ -195,7 +195,42 @@ export function InputManager() {
     };
 
     if (loading) {
-        return <div className="flex justify-center p-8"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>;
+        return (
+            <div className="space-y-4 animate-in fade-in duration-300">
+                <div className="flex justify-end">
+                    <div className="h-10 w-28 bg-muted animate-pulse rounded-md" />
+                </div>
+                <div className="border rounded-md">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Nome do Campo</TableHead>
+                                <TableHead>Tipo</TableHead>
+                                <TableHead className="w-[100px] text-right">Ações</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {Array.from({ length: 5 }).map((_, i) => (
+                                <TableRow key={i}>
+                                    <TableCell>
+                                        <div className="h-4 w-32 bg-muted animate-pulse rounded" />
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="h-6 w-20 bg-muted animate-pulse rounded-full" />
+                                    </TableCell>
+                                    <TableCell className="text-right">
+                                        <div className="flex items-center justify-end gap-2">
+                                            <div className="h-8 w-8 bg-muted animate-pulse rounded-md" />
+                                            <div className="h-8 w-8 bg-muted animate-pulse rounded-md" />
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
+            </div>
+        );
     }
 
     return (
